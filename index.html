@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Built by Systems</title>
+<meta name="description" content="Calm, done-for-you digital products and the systems that sell them. No hype. Just things that work." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4EF;
+    --paper-2:#EEEBE3;
+    --ink:#1E211C;
+    --muted:#6B6F66;
+    --accent:#3E5C4B;
+    --hair:#D9D4CA;
+    --display:"Fraunces", Georgia, serif;
+    --body:"Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    --mono:"Spline Sans Mono", ui-monospace, "SFMono-Regular", monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* utility / mono labels — the system motif */
+  .label{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* top bar */
+  header{
+    border-bottom:1px solid var(--hair);
+  }
+  .bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 0;
+  }
+  .brand{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink);
+    text-decoration:none;
+  }
+  .brand span{color:var(--accent);}
+  nav a{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    color:var(--muted);
+    text-decoration:none;
+    margin-left:26px;
+  }
+  nav a:hover{color:var(--ink);}
+
+  /* hero */
+  .hero{
+    padding:96px 0 84px;
+    border-bottom:1px solid var(--hair);
+  }
+  .hero .label{margin-bottom:26px;}
+  h1{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(38px, 6.4vw, 76px);
+    line-height:1.04;
+    letter-spacing:-0.015em;
+    max-width:16ch;
+    margin-bottom:30px;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--accent);
+  }
+  .lede{
+    font-size:clamp(18px,2.2vw,21px);
+    color:var(--muted);
+    max-width:48ch;
+    margin-bottom:40px;
+  }
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    align-items:center;
+  }
+  .btn{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:15px 26px;
+    border:1px solid var(--ink);
+    color:var(--paper);
+    background:var(--ink);
+    transition:background .2s ease, color .2s ease, transform .2s ease;
+  }
+  .btn:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-1px);}
+  .btn.ghost{
+    background:transparent;
+    color:var(--ink);
+    border-color:var(--hair);
+  }
+  .btn.ghost:hover{background:transparent;color:var(--accent);border-color:var(--accent);transform:translateY(-1px);}
+
+  /* index / what this is */
+  .section{padding:80px 0;border-bottom:1px solid var(--hair);}
+  .section-head{margin-bottom:48px;}
+  .section-head .label{margin-bottom:16px;}
+  .section-head h2{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(26px,3.4vw,38px);
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    max-width:22ch;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--hair);
+    border:1px solid var(--hair);
+  }
+  .cell{
+    background:var(--paper);
+    padding:34px 28px 40px;
+  }
+  .cell .num{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--accent);
+    margin-bottom:20px;
+  }
+  .cell h3{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:21px;
+    line-height:1.2;
+    margin-bottom:10px;
+  }
+  .cell p{
+    font-size:16px;
+    color:var(--muted);
+  }
+
+  /* closing */
+  .closing{
+    padding:96px 0;
+    text-align:center;
+  }
+  .closing .label{margin-bottom:22px;}
+  .closing h2{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(28px,4.2vw,48px);
+    line-height:1.1;
+    letter-spacing:-0.01em;
+    max-width:20ch;
+    margin:0 auto 32px;
+  }
+  .closing .actions{justify-content:center;}
+
+  /* footer */
+  footer{
+    border-top:1px solid var(--hair);
+    padding:40px 0;
+  }
+  .foot{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .foot .label{color:var(--muted);}
+  .foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--hair);}
+  .foot a:hover{color:var(--ink);border-color:var(--ink);}
+
+  /* gentle load */
+  .fade{opacity:0;transform:translateY(10px);animation:rise .7s ease forwards;}
+  .fade.d1{animation-delay:.05s;}
+  .fade.d2{animation-delay:.14s;}
+  .fade.d3{animation-delay:.23s;}
+  .fade.d4{animation-delay:.32s;}
+  @keyframes rise{to{opacity:1;transform:translateY(0);}}
+
+  a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  @media (max-width:760px){
+    .grid{grid-template-columns:1fr;}
+    nav{display:none;}
+    .hero{padding:64px 0 56px;}
+    .section{padding:56px 0;}
+    .closing{padding:72px 0;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .fade{animation:none;opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap bar">
+      <a class="brand" href="/">Built by <span>Systems</span></a>
+      <nav>
+        <a href="#what">What it is</a>
+        <a href="#start">Start</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <p class="label fade d1">Built by Systems · Digital products</p>
+        <h1 class="fade d2">A quieter way to build a <em>profitable</em> digital product business.</h1>
+        <p class="lede fade d3">Done-for-you products and the simple systems that sell them. No hype, no launch theatrics — just clean things that work and keep working.</p>
+        <div class="actions fade d4">
+          <!-- UPDATE THIS LINK to your sales page, e.g. /product-name -->
+          <a class="btn" href="#start">See the product</a>
+          <a class="btn ghost" href="#what">How it works</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="what">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="label">What it is</p>
+          <h2>Everything you need to sell a digital product, built and ready to run.</h2>
+        </div>
+        <div class="grid">
+          <div class="cell">
+            <p class="num">01</p>
+            <h3>Done-for-you</h3>
+            <p>Products that are finished, polished, and yours to sell — not another course about making one.</p>
+          </div>
+          <div class="cell">
+            <p class="num">02</p>
+            <h3>Simple to run</h3>
+            <p>A storefront, a checkout, a delivery. The whole system stays small enough to manage on your own.</p>
+          </div>
+          <div class="cell">
+            <p class="num">03</p>
+            <h3>Calm by design</h3>
+            <p>Plain language, honest pricing, no pressure tactics. The kind of brand people actually trust.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" id="start">
+      <div class="wrap">
+        <p class="label">Start here</p>
+        <h2>Take a look at what's available now.</h2>
+        <div class="actions">
+          <!-- UPDATE THIS LINK to your sales page -->
+          <a class="btn" href="#">See the product</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <p class="label">© 2026 Built by Systems</p>
+      <!-- UPDATE this email if you want a contact link -->
+      <p class="label"><a href="mailto:hello@builtbysystems.online">hello@builtbysystems.online</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
