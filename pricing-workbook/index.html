@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing Your Digital Product: The Workbook</title>
+  <style>
+    /* ---------------------------------------------------------------
+       The editorial shell. Warm, calm, one accent color. Everything
+       the buyer needs is in this one file — no internet, no fonts to
+       install. Edit the colors below if you want a different mood.
+       --------------------------------------------------------------- */
+    :root {
+      --cream: #f5f1e8;        /* page background */
+      --paper: #fbf9f4;        /* cards / image slots */
+      --ink: #2e2a25;          /* main text */
+      --soft-ink: #6a6157;     /* quieter text */
+      --accent: #b5532a;       /* the single accent — terracotta */
+      --line: #e4ddcf;         /* hairline dividers */
+      --measure: 40rem;        /* comfortable reading width */
+    }
+
+    * { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: Charter, Georgia, Cambria, "Times New Roman", serif;
+      font-size: 1.125rem;
+      line-height: 1.7;
+      text-rendering: optimizeLegibility;
+    }
+
+    .wrap {
+      max-width: var(--measure);
+      margin: 0 auto;
+      padding: 5rem 1.5rem 6rem;
+    }
+
+    /* Generous, quiet headings. */
+    h1, h2 {
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 6vw, 3.1rem);
+      margin: 0 0 1.2rem;
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      margin: 0 0 1rem;
+    }
+
+    .hero { margin-bottom: 3.5rem; }
+
+    .lede {
+      font-size: 1.3rem;
+      color: var(--soft-ink);
+      margin: 0;
+    }
+
+    section { margin: 3.5rem 0; }
+
+    section p { margin: 0 0 1.2rem; }
+    section p:last-child { margin-bottom: 0; }
+
+    .eyebrow {
+      display: block;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    /* A quiet divider between sections. */
+    .rule {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 3.5rem 0;
+    }
+
+    /* Image slots — styled placeholders so the page looks intentional
+       even before the buyer drops in their generated images. */
+    figure.slot {
+      margin: 3.5rem 0;
+    }
+
+    figure.slot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      min-height: 180px;
+    }
+
+    figure.slot figcaption {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--soft-ink);
+      font-style: italic;
+    }
+
+    /* The close / call to action. */
+    .close {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      margin-top: 4rem;
+    }
+
+    a, a:visited { color: var(--accent); }
+
+    .buy {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
+      padding: 0.95rem 1.9rem;
+      border-radius: 6px;
+    }
+    .buy:visited { color: var(--cream); }
+    .buy:hover { background: #9c4523; }
+    .buy-wrap { margin: 2.5rem 0 0; }
+
+    @media (max-width: 30rem) {
+      .wrap { padding: 3rem 1.25rem 4rem; }
+      body { font-size: 1.06rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <h1>Pricing Your Digital Product: The Workbook</h1>
+      <p class="lede">Most creators charge less than their work is worth. Not by a little, and not because they don&#x27;t care. They pick a number that feels safe, the platform takes its cut, and the gap between what they charge and what buyers would happily pay just sits there, quietly costing them.</p>
+    </header>
+      <figure class="slot">
+        <img src="images/hero.png" alt="An open notebook and pen on a calm desk in soft morning light">
+        <figcaption>Image slot: replace images/hero.png (see image-prompts.md)</figcaption>
+      </figure>
+    <section>
+      <span class="eyebrow">The problem</span>
+      <h2>The problem</h2>
+      <p>You know the feeling. The product is done. The only thing left is the price field, and that&#x27;s where everything stalls. You think of a number, then talk yourself down from it. You glance at what other people charge and copy something close. You launch at a price you half-believe in, and somewhere underneath, you suspect you&#x27;re leaving money on the table.</p>
+      <p>The trouble is, undercharging doesn&#x27;t feel like a number. It feels like caution. So it&#x27;s hard to see the actual distance between what you&#x27;re asking and what the work is worth. That distance is real, and it&#x27;s usually larger than people expect. You can&#x27;t close a gap you can&#x27;t measure.</p>
+    </section>
+    <section>
+      <span class="eyebrow">How this came about</span>
+      <h2>How this came about</h2>
+      <p>This started as a spreadsheet I kept rebuilding for myself. Every time I launched something, I went through the same loop: guess a price, second-guess it, forget about platform fees until the first sale landed and the payout was smaller than I&#x27;d pictured.</p>
+      <p>Eventually I stopped guessing and wrote down the steps I was actually doing in my head, badly. What does the platform take. What does the buyer actually get out of this. Where do I sit against the alternatives. How should the tiers work. Could I say the final number out loud without wincing.</p>
+      <p>That became twelve worksheets, in order. Not advice to read, not a course to sit through. Just the questions, with space to answer them using your own numbers, until a price falls out the other end that you can stand behind.</p>
+    </section>
+      <figure class="slot">
+        <img src="images/story.png" alt="A person at a laptop working through worksheets by a window">
+        <figcaption>Image slot: replace images/story.png (see image-prompts.md)</figcaption>
+      </figure>
+    <section>
+      <span class="eyebrow">What you get</span>
+      <h2>What you get</h2>
+      <p>It&#x27;s a Notion workbook with twelve fill-in worksheets, worked in order across five stages: the platform fee math, value pricing, market positioning, tier strategy, and a final price-confidence check.</p>
+      <p>You put in your real inputs. Your fees, your buyer&#x27;s outcome, your market. What comes out is your price, not a formula someone handed you. It&#x27;s seventeen dollars, paid once, yours to keep and reuse for the next product and the one after that.</p>
+    </section>
+      <figure class="slot">
+        <img src="images/offer.png" alt="A tidy flat lay of worksheet pages arranged in order on a cream surface">
+        <figcaption>Image slot: replace images/offer.png (see image-prompts.md)</figcaption>
+      </figure>
+      <p class="buy-wrap"><a class="buy" href="https://stan.store/QuietProfitSystem/p/product-pricing-rnxekw1g">Get the Workbook — $17</a></p>
+    <hr class="rule">
+    <section>
+      <span class="eyebrow">Why it works</span>
+      <h2>Why it works</h2>
+      <p>The reason it works is that it starts with the part you can&#x27;t argue with: the math. Before you talk yourself into or out of anything, you see what you actually keep after the platform takes its cut. That alone tends to move the number.</p>
+      <p>From there each stage builds on the last. By the time you reach the final checklist, the price isn&#x27;t a hope. It&#x27;s something you can trace back through fees, value, and position. That&#x27;s the difference between a number you guessed and a number you can defend.</p>
+    </section>
+    <section>
+      <span class="eyebrow">Honest answers</span>
+      <h2>Honest answers</h2>
+      <p>You can find pricing advice for free, and a lot of it is good. The catch is that free advice leaves you to assemble it yourself. This gives you the worksheets in order, so you finish with a price instead of more tabs open.</p>
+      <p>You might wonder if it fits your specific product. It runs entirely on your inputs, so the output is shaped by your situation rather than a generic template.</p>
+      <p>And seventeen dollars can seem too small to do much. That&#x27;s sort of the point. It&#x27;s a narrow, focused tool. The first time the fee math stops you from underpricing by a few dollars, it&#x27;s already paid for itself.</p>
+    </section>
+    <section class="close">
+      <span class="eyebrow">If it&#x27;s a fit</span>
+      <h2>If it&#x27;s a fit</h2>
+      <p>If you&#x27;ve been stuck at the price field, this is a quiet way through it. Work the twelve worksheets, in order, with your own numbers, and come out with a price you can say plainly. It&#x27;s seventeen dollars, one time. When you&#x27;re ready, it&#x27;s here.</p>
+      <p class="buy-wrap"><a class="buy" href="https://stan.store/QuietProfitSystem/p/product-pricing-rnxekw1g">Get the Workbook — $17</a></p>
+    </section>
+  </main>
+</body>
+</html>
