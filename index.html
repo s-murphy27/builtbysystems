@@ -174,6 +174,11 @@
     color:var(--muted);
   }
 
+  /* two-up product list in the closing section */
+  .grid.two{grid-template-columns:repeat(2,1fr);}
+  .products .cell{text-align:left;}
+  .cell-cta{margin:22px 0 0;}
+
   /* closing */
   .closing{
     padding:96px 0;
@@ -250,7 +255,7 @@
         <h1 class="fade d2">A quieter way to build a <em>profitable</em> digital product business.</h1>
         <p class="lede fade d3">Done-for-you products and the simple systems that sell them. No hype, no launch theatrics — just clean things that work and keep working.</p>
         <div class="actions fade d4">
-          <a class="btn" href="/ai-tool/">See the product</a>
+          <a class="btn" href="#start">See what's available</a>
           <a class="btn ghost" href="#what">How it works</a>
         </div>
       </div>
@@ -286,8 +291,19 @@
       <div class="wrap">
         <p class="label">Start here</p>
         <h2>Take a look at what's available now.</h2>
-        <div class="actions">
-          <a class="btn" href="/ai-tool/">See the product</a>
+        <div class="grid two products">
+          <div class="cell">
+            <p class="num">01</p>
+            <h3>The Automatic AI Marketing Creation Tool</h3>
+            <p>Researches your angle, then writes your sales page, ads, and a month of posts — in one calm voice, on your own computer.</p>
+            <p class="cell-cta"><a class="btn" href="/ai-tool/">See the tool</a></p>
+          </div>
+          <div class="cell">
+            <p class="num">02</p>
+            <h3>Pricing Your Digital Product: The Workbook</h3>
+            <p>Twelve worksheets that take you from guessing at a price to one you can defend — fee math, value, positioning, and a final confidence check.</p>
+            <p class="cell-cta"><a class="btn" href="/pricing-workbook/">See the workbook</a></p>
+          </div>
         </div>
       </div>
     </section>
