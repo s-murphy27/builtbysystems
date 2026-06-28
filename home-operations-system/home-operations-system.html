@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Home Operations System</title>
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root{
+    --bg:#F8F6F1;
+    --surface:#FFFFFF;
+    --ink:#16324F;        /* deep navy: structure + headings */
+    --accent:#E0922F;     /* warm amber: CTA / attention */
+    --muted:#5A6B75;
+    --hair:#E2DED4;       /* subtle borders */
+    --hair-strong:#CBD3D8;
+    --ok:#2F8F5B;         /* green */
+    --ok-bg:#E7F2EC;
+    --warn:#E0922F;       /* amber */
+    --warn-bg:#FBEFDD;
+    --bad:#C0492F;        /* red */
+    --bad-bg:#F7E4DF;
+    --shadow:0 1px 2px rgba(22,50,79,.05);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --radius:10px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============ LAYOUT ============ */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  header.top{
+    background:var(--ink);
+    color:#fff;
+    border-bottom:3px solid var(--accent);
+  }
+  .top-inner{
+    max-width:1180px;margin:0 auto;padding:22px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand .mark{
+    width:40px;height:40px;border:2px solid var(--accent);border-radius:8px;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+    font-weight:800;font-size:18px;color:var(--accent);letter-spacing:.5px;
+  }
+  .brand h1{font-size:20px;font-weight:800;letter-spacing:-.2px;line-height:1.1;}
+  .brand .sub{font-size:12px;color:#A9C0D4;letter-spacing:.04em;text-transform:uppercase;margin-top:3px;}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{
+    appearance:none;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink);
+    font-family:inherit;font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;transition:transform .04s ease, box-shadow .15s ease, background .15s;
+    line-height:1;
+  }
+  .btn:hover{box-shadow:var(--shadow);}
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:transparent;border-color:rgba(255,255,255,.3);color:#fff;}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#2a1c06;}
+  .btn.accent:hover{filter:brightness(1.04);}
+  .btn.sm{padding:6px 10px;font-size:12px;}
+  .btn.icon{padding:6px 9px;}
+
+  /* ============ DUE SOON ROLLUP ============ */
+  .duebar{margin:22px 0 6px;}
+  .duebar .card{
+    background:var(--surface);border:1px solid var(--hair);border-left:4px solid var(--accent);
+    border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);
+  }
+  .duebar h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .duebar .lead{font-size:18px;font-weight:700;margin-bottom:14px;letter-spacing:-.2px;}
+  .duebar .lead .count{color:var(--accent);}
+  .due-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:760px){.due-grid{grid-template-columns:1fr;}}
+  .due-col h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;border-bottom:1px solid var(--hair);padding-bottom:6px;}
+  .due-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .due-list li{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;padding:5px 6px;border-radius:6px;}
+  .due-list li:hover{background:var(--bg);}
+  .due-list .when{margin-left:auto;font-size:12px;font-weight:700;white-space:nowrap;}
+  .due-empty{color:var(--muted);font-size:14px;font-style:italic;padding:4px 0;}
+
+  /* ============ TABS ============ */
+  .tabs{display:flex;gap:4px;margin:22px 0 0;border-bottom:2px solid var(--hair);flex-wrap:wrap;}
+  .tab{
+    appearance:none;border:none;background:transparent;font-family:inherit;cursor:pointer;
+    padding:12px 18px;font-size:14px;font-weight:600;color:var(--muted);
+    border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:8px;
+  }
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--ink);border-bottom-color:var(--accent);}
+  .tab .pill{background:var(--bg);border:1px solid var(--hair);border-radius:20px;font-size:11px;padding:1px 8px;font-weight:700;color:var(--muted);}
+
+  .panel{display:none;padding:26px 0 60px;}
+  .panel.active{display:block;}
+  .panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .panel-head h2{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+  .panel-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:60ch;}
+  .panel-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+  /* ============ TABLES ============ */
+  .table-scroll{overflow-x:auto;border:1px solid var(--hair);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px;}
+  thead th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+    font-weight:700;padding:12px 12px;border-bottom:2px solid var(--hair);background:#FCFBF8;white-space:nowrap;
+  }
+  tbody td{padding:7px 10px;border-bottom:1px solid var(--hair);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FCFBF8;}
+  td input, td select{
+    width:100%;border:1px solid transparent;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);
+    padding:6px 7px;border-radius:6px;
+  }
+  td input:hover, td select:hover{border-color:var(--hair);}
+  td input:focus, td select:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+  td input[type=date]{min-width:130px;}
+  td input.num{text-align:right;}
+  .col-num{text-align:right;}
+  td.computed{font-weight:700;white-space:nowrap;color:var(--ink);}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .chip.ok{color:var(--ok);background:var(--ok-bg);}
+  .chip.warn{color:#9a6212;background:var(--warn-bg);}
+  .chip.bad{color:var(--bad);background:var(--bad-bg);}
+  .chip.none{color:var(--muted);background:var(--bg);}
+
+  .row-del{color:var(--muted);border-color:transparent;background:transparent;font-size:16px;line-height:1;padding:4px 8px;cursor:pointer;border-radius:6px;}
+  .row-del:hover{color:var(--bad);background:var(--bad-bg);}
+
+  .empty{padding:46px 24px;text-align:center;color:var(--muted);}
+  .empty p{margin-bottom:10px;font-size:15px;}
+  .linkish{color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+
+  .totals{display:flex;gap:22px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  .stat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:12px 18px;box-shadow:var(--shadow);}
+  .stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .stat .v{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+  select.filter{border:1px solid var(--hair-strong);background:var(--surface);font-family:inherit;font-size:13px;padding:8px 12px;border-radius:8px;color:var(--ink);font-weight:600;}
+
+  /* ============ SEASONAL ============ */
+  .season{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);}
+  .season-head{width:100%;display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;background:transparent;border:none;font-family:inherit;text-align:left;}
+  .season-head:hover{background:#FCFBF8;}
+  .season-ico{font-size:20px;}
+  .season-title{font-size:16px;font-weight:800;letter-spacing:-.2px;}
+  .season-when{font-size:12px;color:var(--muted);font-weight:600;}
+  .season-active{font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:#2a1c06;padding:2px 8px;border-radius:20px;font-weight:800;}
+  .season-prog{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .progbar{width:130px;height:8px;background:var(--bg);border:1px solid var(--hair);border-radius:20px;overflow:hidden;}
+  .progbar > span{display:block;height:100%;background:var(--ok);border-radius:20px;transition:width .25s ease;}
+  .prog-label{font-size:12px;font-weight:700;color:var(--muted);min-width:64px;text-align:right;}
+  .caret{transition:transform .2s ease;color:var(--muted);font-size:13px;}
+  .season.open .caret{transform:rotate(90deg);}
+  .season-body{display:none;padding:6px 20px 18px;border-top:1px solid var(--hair);}
+  .season.open .season-body{display:block;}
+  .task{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px dashed var(--hair);}
+  .task:last-of-type{border-bottom:none;}
+  .task input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+  .task label{cursor:pointer;flex:1;}
+  .task.done label{text-decoration:line-through;color:var(--muted);}
+  .task .task-del{margin-left:auto;}
+  .season-add{display:flex;gap:8px;margin-top:12px;}
+  .season-add input{flex:1;border:1px solid var(--hair-strong);background:#fff;font-family:inherit;font-size:13.5px;padding:8px 10px;border-radius:8px;color:var(--ink);}
+  .season-add input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+
+  footer.foot{border-top:1px solid var(--hair);padding:26px 0 50px;color:var(--muted);font-size:12.5px;}
+  footer.foot .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;}
+
+  .hint{font-size:12px;color:var(--muted);}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+  /* toast */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+    padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s ease;z-index:50;box-shadow:0 8px 24px rgba(22,50,79,.25);}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ============ PRINT ============ */
+  @media print{
+    @page{margin:16mm;}
+    body{background:#fff;font-size:11.5px;}
+    header.top{background:#fff;color:var(--ink);border-bottom:2px solid var(--ink);}
+    .brand .mark{border-color:var(--ink);color:var(--ink);}
+    .brand .sub{color:var(--muted);}
+    .toolbar,.tabs,.row-del,.task-del,.season-add,.panel-tools .btn,.linkish,#toast,.btn{display:none !important;}
+    .panel{display:block !important;padding:14px 0;page-break-inside:auto;}
+    .panel-head h2{font-size:16px;border-bottom:2px solid var(--ink);padding-bottom:4px;}
+    .season{box-shadow:none;border:1px solid #999;page-break-inside:avoid;}
+    .season-body{display:block !important;}
+    .caret,.progbar{display:none;}
+    .table-scroll{overflow:visible;box-shadow:none;border:1px solid #999;}
+    table{min-width:0;font-size:10.5px;}
+    td input,td select{border:none;padding:2px;}
+    tbody tr:hover,thead th{background:transparent;}
+    .duebar .card{border:1px solid #999;box-shadow:none;}
+    .chip{border:1px solid currentColor;}
+    .wrap{max-width:none;padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark">HO</div>
+      <div>
+        <h1>The Home Operations System</h1>
+        <div class="sub">Your house, run like a system</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn ghost" onclick="exportCSV()">⤓ Export CSV</button>
+      <button class="btn ghost" onclick="exportBackup()">⛁ Backup</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()">⤒ Import</button>
+      <button class="btn ghost" onclick="window.print()">⎙ Print</button>
+      <input id="importFile" type="file" accept=".json,application/json" class="visually-hidden" onchange="importBackup(event)">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- DUE SOON ROLLUP -->
+  <section class="duebar">
+    <div class="card">
+      <h2>◷ Due Soon</h2>
+      <div class="lead">Next 60 days — <span class="count" id="dueCount">0</span> items need attention</div>
+      <div class="due-grid">
+        <div class="due-col">
+          <h3>Systems &amp; Appliances</h3>
+          <ul class="due-list" id="dueSystems"></ul>
+        </div>
+        <div class="due-col">
+          <h3>Seasonal Tasks</h3>
+          <ul class="due-list" id="dueSeasonal"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABS -->
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="systems">⚙ Systems &amp; Appliances <span class="pill" id="cntSystems">0</span></button>
+    <button class="tab" data-tab="seasonal">❖ Seasonal Maintenance <span class="pill" id="cntSeasonal">0%</span></button>
+    <button class="tab" data-tab="repairs">▤ Repair &amp; Cost Log <span class="pill" id="cntRepairs">0</span></button>
+    <button class="tab" data-tab="documents">▣ Document Vault <span class="pill" id="cntDocs">0</span></button>
+  </nav>
+
+  <!-- SYSTEMS -->
+  <section class="panel active" id="panel-systems">
+    <div class="panel-head">
+      <div>
+        <h2>Systems &amp; Appliances</h2>
+        <p>Every system that can fail and cost you. Set the last service date and interval — the system calculates what's due next and flags it before it becomes a $5,000 surprise.</p>
+      </div>
+      <div class="panel-tools">
+        <button class="btn accent" onclick="addSystem()">+ Add system</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="tblSystems">
+        <thead>
+          <tr>
+            <th>System / Appliance</th>
+            <th>Location</th>
+            <th>Brand / Model</th>
+            <th>Installed</th>
+            <th>Warranty ends</th>
+            <th>Last service</th>
+            <th>Every (mo)</th>
+            <th>Next due</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="bodySystems"></tbody>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:10px;">Status: <span class="chip bad">Overdue</span> past due &nbsp;·&nbsp; <span class="chip warn">Due soon</span> within 30 days &nbsp;·&nbsp; <span class="chip ok">On track</span> further out. Next-due is calculated from last service + interval (falls back to install date).</p>
+  </section>
+
+  <!-- SEASONAL -->
+  <section class="panel" id="panel-seasonal">
+    <div class="panel-head">
+      <div>
+        <h2>Seasonal Maintenance Schedule</h2>
+        <p>The standard homeowner checklist, organised by season. Work the list each quarter — this is the routine that prevents the expensive failures.</p>
+      </div>
+      <div class="panel-tools">
+        <button class="btn sm" onclick="resetSeasonChecks()">↺ Reset all checks</button>
+      </div>
+    </div>
+    <div id="seasons"></div>
+  </section>
+
+  <!-- REPAIRS -->
+  <section class="panel" id="panel-repairs">
+    <div class="panel-head">
+      <div>
+        <h2>Repair &amp; Cost Log</h2>
+        <p>Every dollar that goes into the house. Track it, total it by year, and walk into tax time or a sale with a complete record.</p>
+      </div>
+      <div class="panel-tools">
+        <label class="hint" for="yearFilter">Year</label>
+        <select class="filter" id="yearFilter" onchange="renderRepairs()"></select>
+        <button class="btn accent" onclick="addRepair()">+ Add entry</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="tblRepairs">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Item / Work done</th>
+            <th class="col-num">Cost</th>
+            <th>Contractor</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="bodyRepairs"></tbody>
+      </table>
+    </div>
+    <div class="totals">
+      <div class="stat"><div class="k">Total — <span id="totalYearLabel">all years</span></div><div class="v" id="repairTotal">$0</div></div>
+      <div class="stat"><div class="k">Entries</div><div class="v" id="repairEntries">0</div></div>
+      <div class="stat"><div class="k">Lifetime total</div><div class="v" id="repairLifetime">$0</div></div>
+    </div>
+  </section>
+
+  <!-- DOCUMENTS -->
+  <section class="panel" id="panel-documents">
+    <div class="panel-head">
+      <div>
+        <h2>Document Vault</h2>
+        <p>Where the paperwork lives. Log receipts, warranties and manuals — what it is, where to find it, and the details that matter. (References, not file storage — point to your cloud drive, email, or filing cabinet.)</p>
+      </div>
+      <div class="panel-tools">
+        <button class="btn accent" onclick="addDoc()">+ Add document</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="tblDocs">
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Type</th>
+            <th>Where it lives (link / location)</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="bodyDocs"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>The Home Operations System — your data is saved automatically in this browser. Nothing is sent anywhere.</span>
+    <span>Back up regularly with <b>Export CSV</b> or <b>Backup</b>.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ====================================================================
+   THE HOME OPERATIONS SYSTEM — self-contained, offline, localStorage.
+   ==================================================================== */
+"use strict";
+
+var STORAGE_KEY = "hos_data_v1";
+var ACTIVE_TAB_KEY = "hos_tab_v1";
+
+/* ---------- default seasonal tasks ---------- */
+var SEASONS = [
+  {key:"spring", title:"Spring", ico:"🌱", months:[2,3,4], start:[2,1]},
+  {key:"summer", title:"Summer", ico:"☀️", months:[5,6,7], start:[5,1]},
+  {key:"fall",   title:"Fall",   ico:"🍂", months:[8,9,10], start:[8,1]},
+  {key:"winter", title:"Winter", ico:"❄️", months:[11,0,1], start:[11,1]}
+];
+var DEFAULT_TASKS = {
+  spring:[
+    "Test smoke & CO detectors; replace batteries",
+    "Inspect roof for winter damage",
+    "Clean gutters and downspouts",
+    "Service the A/C unit before summer",
+    "Check exterior caulking & weatherstripping",
+    "Clean and re-hang window screens",
+    "Power-wash siding, deck and walkways",
+    "Check outdoor faucets / hose bibs for freeze damage",
+    "Fertilize lawn; test irrigation and sprinklers",
+    "Inspect foundation for cracks; check grading & drainage"
+  ],
+  summer:[
+    "Replace HVAC air filters",
+    "Vacuum refrigerator condenser coils",
+    "Clean out the dryer vent and ducting",
+    "Inspect and reseal/stain deck or fence",
+    "Test garage door auto-reverse safety",
+    "Deep-clean and inspect the outdoor grill",
+    "Check attic ventilation and for pests",
+    "Touch up exterior paint and trim",
+    "Flush water heater; test pressure-relief valve",
+    "Check and clean range hood / exhaust filter"
+  ],
+  fall:[
+    "Service the furnace / heating before winter",
+    "Clean gutters again after leaves fall",
+    "Inspect and clean chimney & fireplace",
+    "Drain and winterize outdoor faucets & irrigation",
+    "Seal gaps and re-check door/window weatherstripping",
+    "Reverse ceiling fan direction (clockwise)",
+    "Test the sump pump and backup",
+    "Aerate, fertilize and winterize the lawn",
+    "Test detectors; check fire extinguisher dates",
+    "Inspect roof, flashing and attic before snow"
+  ],
+  winter:[
+    "Replace HVAC air filters",
+    "Check for ice dams and clear icicles safely",
+    "Monitor indoor humidity; keep vents clear",
+    "Test all GFCI outlets",
+    "Inspect basement / crawlspace for leaks & moisture",
+    "Check attic insulation levels",
+    "Locate and test the main water shut-off",
+    "Protect exposed pipes from freezing",
+    "Vacuum vents, registers and baseboard heaters",
+    "Review home inventory; budget next year's projects"
+  ]
+};
+
+/* ---------- state ---------- */
+var data = load();
+
+function blankData(){
+  var seasonal = {};
+  SEASONS.forEach(function(s){
+    seasonal[s.key] = DEFAULT_TASKS[s.key].map(function(t){return {id:uid(), task:t, done:false, custom:false};});
+  });
+  return {systems:[], seasonal:seasonal, repairs:[], documents:[]};
+}
+function load(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return blankData();
+    var d = JSON.parse(raw);
+    if(!d.systems) d.systems=[];
+    if(!d.repairs) d.repairs=[];
+    if(!d.documents) d.documents=[];
+    if(!d.seasonal) d.seasonal = blankData().seasonal;
+    SEASONS.forEach(function(s){ if(!d.seasonal[s.key]) d.seasonal[s.key]=[]; });
+    return d;
+  }catch(e){ return blankData(); }
+}
+function save(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  catch(e){ toast("Could not save — storage may be full or blocked."); }
+}
+
+/* ---------- helpers ---------- */
+function uid(){ return "id" + Math.abs((Date.now() ^ (performance.now()*1000|0)) ).toString(36) + (idSeq++).toString(36); }
+var idSeq = 0;
+function esc(v){ return (v==null?"":String(v)); }
+function todayMid(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
+function parseDate(s){ if(!s) return null; var d=new Date(s+"T00:00:00"); return isNaN(d)?null:d; }
+function addMonths(date, n){
+  var d = new Date(date.getTime());
+  var day = d.getDate();
+  d.setDate(1);
+  d.setMonth(d.getMonth()+n);
+  var dim = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+  d.setDate(Math.min(day, dim));
+  return d;
+}
+function fmtDate(d){
+  if(!d) return "";
+  var m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return m[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+}
+function fmtMoney(n){
+  n = Number(n)||0;
+  return "$"+n.toLocaleString("en-US",{minimumFractionDigits:(n%1?2:0),maximumFractionDigits:2});
+}
+function daysBetween(a,b){ return Math.round((b - a)/86400000); }
+
+/* compute next-due date for a system */
+function nextDue(sys){
+  var interval = parseInt(sys.intervalMonths,10);
+  if(!interval || interval<=0) return null;
+  var base = parseDate(sys.lastService) || parseDate(sys.installDate);
+  if(!base) return null;
+  return addMonths(base, interval);
+}
+function systemStatus(sys){
+  var nd = nextDue(sys);
+  if(!nd) return {cls:"none", label:"Set dates", days:null, nd:null};
+  var days = daysBetween(todayMid(), nd);
+  if(days < 0) return {cls:"bad", label:"Overdue", days:days, nd:nd};
+  if(days <= 30) return {cls:"warn", label:"Due soon", days:days, nd:nd};
+  return {cls:"ok", label:"On track", days:days, nd:nd};
+}
+
+/* ====================================================================
+   RENDER
+   ==================================================================== */
+function renderAll(){
+  renderSystems();
+  renderSeasonal();
+  renderRepairs();
+  renderDocs();
+  renderDueSoon();
+  updateCounts();
+}
+
+function updateCounts(){
+  document.getElementById("cntSystems").textContent = data.systems.length;
+  document.getElementById("cntRepairs").textContent = data.repairs.length;
+  document.getElementById("cntDocs").textContent = data.documents.length;
+  // seasonal overall %
+  var tot=0, done=0;
+  SEASONS.forEach(function(s){ var arr=data.seasonal[s.key]||[]; tot+=arr.length; done+=arr.filter(function(t){return t.done;}).length; });
+  document.getElementById("cntSeasonal").textContent = (tot? Math.round(done/tot*100):0)+"%";
+}
+
+/* ---------- SYSTEMS ---------- */
+function renderSystems(){
+  var body = document.getElementById("bodySystems");
+  body.innerHTML = "";
+  if(!data.systems.length){
+    body.innerHTML = '<tr><td colspan="10"><div class="empty"><p>No systems yet. Add your furnace, water heater, HVAC, roof, sump pump, appliances — anything that fails and costs money.</p>'
+      + '<button class="btn accent" onclick="addSystem()">+ Add your first system</button> &nbsp; <span class="linkish" onclick="loadExampleSystems()">or load example data</span></div></td></tr>';
+    return;
+  }
+  data.systems.forEach(function(sys){
+    var st = systemStatus(sys);
+    var tr = document.createElement("tr");
+    tr.id = "sysrow_"+sys.id;
+    tr.innerHTML =
+      cell("text", sys, "name", "e.g. Furnace") +
+      cell("text", sys, "location", "e.g. Basement") +
+      cell("text", sys, "brand", "Brand / model") +
+      cell("date", sys, "installDate") +
+      cell("date", sys, "warrantyExpiry") +
+      cell("date", sys, "lastService") +
+      cellNum(sys, "intervalMonths", "12") +
+      '<td class="computed">'+ (st.nd? fmtDate(st.nd) : '<span style="color:var(--muted);font-weight:400">—</span>') +'</td>' +
+      '<td><span class="chip '+st.cls+'">'+st.label+'</span></td>' +
+      '<td><button class="row-del" title="Delete" onclick="delSystem(\''+sys.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+}
+function cell(type, obj, key, ph){
+  return '<td><input type="'+type+'" value="'+attr(obj[key])+'" '+(ph?'placeholder="'+attr(ph)+'"':'')+
+    ' oninput="upd(\''+obj.id+'\',\''+colOf(obj)+'\',\''+key+'\',this.value)"></td>';
+}
+function cellNum(obj, key, ph){
+  return '<td class="col-num"><input class="num" type="number" min="0" step="1" value="'+attr(obj[key])+'" placeholder="'+ph+'"'+
+    ' oninput="upd(\''+obj.id+'\',\''+colOf(obj)+'\',\''+key+'\',this.value)"></td>';
+}
+function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
+function colOf(obj){ return obj.__col; }
+
+/* generic update by collection */
+function upd(id, col, key, val){
+  var arr = data[col];
+  var item = arr.find(function(x){return x.id===id;});
+  if(!item) return;
+  item[key] = val;
+  save();
+  if(col==="systems"){ refreshSystemRowStatus(id); renderDueSoon(); }
+  if(col==="repairs"){ renderRepairTotals(); refreshYearFilter(); renderDueSoon(); }
+}
+function refreshSystemRowStatus(id){
+  // update ONLY this row's computed next-due + status chip, so the active
+  // input never loses focus mid-edit.
+  var sys = data.systems.find(function(x){return x.id===id;});
+  var row = document.getElementById("sysrow_"+id);
+  if(!sys || !row) return;
+  var st = systemStatus(sys);
+  var cells = row.children; // 0..9
+  cells[7].innerHTML = st.nd ? fmtDate(st.nd) : '<span style="color:var(--muted);font-weight:400">—</span>';
+  cells[8].innerHTML = '<span class="chip '+st.cls+'">'+st.label+'</span>';
+}
+
+function addSystem(){
+  var s = {id:uid(), __col:"systems", name:"", location:"", brand:"", installDate:"", warrantyExpiry:"", lastService:"", intervalMonths:""};
+  data.systems.push(s); save(); renderSystems(); updateCounts(); switchTab("systems");
+}
+function delSystem(id){
+  data.systems = data.systems.filter(function(x){return x.id!==id;});
+  save(); renderSystems(); renderDueSoon(); updateCounts();
+}
+function loadExampleSystems(){
+  var t = todayMid();
+  function iso(d){ return d.toISOString().slice(0,10); }
+  function back(months){ return iso(addMonths(t,-months)); }
+  data.systems.push(
+    {id:uid(),__col:"systems",name:"Furnace",location:"Basement",brand:"Carrier 59TP6",installDate:back(96),warrantyExpiry:back(-24),lastService:back(11),intervalMonths:"12"},
+    {id:uid(),__col:"systems",name:"Water heater",location:"Utility closet",brand:"Rheem 50gal",installDate:back(72),warrantyExpiry:back(-12),lastService:back(14),intervalMonths:"12"},
+    {id:uid(),__col:"systems",name:"HVAC / A/C",location:"Exterior — side",brand:"Trane XR14",installDate:back(60),warrantyExpiry:back(0),lastService:back(5),intervalMonths:"6"},
+    {id:uid(),__col:"systems",name:"Sump pump",location:"Basement pit",brand:"Zoeller M53",installDate:back(36),warrantyExpiry:back(-12),lastService:back(7),intervalMonths:"6"}
+  );
+  save(); renderSystems(); renderDueSoon(); updateCounts();
+  toast("Loaded 4 example systems — edit or delete them anytime.");
+}
+
+/* ---------- SEASONAL ---------- */
+function currentSeasonKey(){
+  var m = todayMid().getMonth();
+  var found = SEASONS.find(function(s){return s.months.indexOf(m)>=0;});
+  return found ? found.key : "spring";
+}
+function renderSeasonal(){
+  var host = document.getElementById("seasons");
+  host.innerHTML = "";
+  var curKey = currentSeasonKey();
+  SEASONS.forEach(function(s){
+    var arr = data.seasonal[s.key] || [];
+    var done = arr.filter(function(t){return t.done;}).length;
+    var pct = arr.length ? Math.round(done/arr.length*100) : 0;
+    var isCur = s.key===curKey;
+    var wrap = document.createElement("div");
+    wrap.className = "season" + (isCur?" open":"");
+    wrap.setAttribute("data-season", s.key);
+
+    var tasksHTML = arr.map(function(t){
+      return '<div class="task'+(t.done?" done":"")+'">'
+        + '<input type="checkbox" '+(t.done?"checked":"")+' onchange="toggleTask(\''+s.key+'\',\''+t.id+'\',this.checked)" id="t_'+t.id+'">'
+        + '<label for="t_'+t.id+'">'+esc(t.task)+'</label>'
+        + '<button class="row-del task-del" title="Delete" onclick="delTask(\''+s.key+'\',\''+t.id+'\')">✕</button>'
+        + '</div>';
+    }).join("");
+
+    wrap.innerHTML =
+      '<button class="season-head" onclick="toggleSeason(this)">'
+        + '<span class="season-ico">'+s.ico+'</span>'
+        + '<span><span class="season-title">'+s.title+'</span> '
+        + (isCur?'<span class="season-active">In season</span>':'')+'<br><span class="season-when">'+seasonMonthsLabel(s)+'</span></span>'
+        + '<span class="season-prog"><span class="progbar"><span style="width:'+pct+'%;background:'+(pct===100?"var(--ok)":"var(--accent)")+'"></span></span>'
+        + '<span class="prog-label">'+done+'/'+arr.length+' · '+pct+'%</span>'
+        + '<span class="caret">▶</span></span>'
+      + '</button>'
+      + '<div class="season-body">'
+        + tasksHTML
+        + '<div class="season-add"><input type="text" placeholder="Add a custom task for '+s.title+'…" '
+        + 'onkeydown="if(event.key===\'Enter\'){addTask(\''+s.key+'\',this.value);this.value=\'\';}">'
+        + '<button class="btn sm" onclick="var i=this.previousElementSibling;addTask(\''+s.key+'\',i.value);i.value=\'\';">Add</button></div>'
+      + '</div>';
+    host.appendChild(wrap);
+  });
+}
+function seasonMonthsLabel(s){
+  var names=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return s.months.map(function(m){return names[m];}).join(" · ");
+}
+function toggleSeason(btn){ btn.parentElement.classList.toggle("open"); }
+function toggleTask(seasonKey, id, checked){
+  var t = (data.seasonal[seasonKey]||[]).find(function(x){return x.id===id;});
+  if(t){ t.done=checked; save(); }
+  // update just this season's progress without collapsing others
+  refreshSeasonProgress(seasonKey);
+  renderDueSoon(); updateCounts();
+}
+function refreshSeasonProgress(seasonKey){
+  var arr=data.seasonal[seasonKey]||[];
+  var done=arr.filter(function(t){return t.done;}).length;
+  var pct=arr.length?Math.round(done/arr.length*100):0;
+  var wrap=document.querySelector('.season[data-season="'+seasonKey+'"]');
+  if(!wrap) return;
+  var bar=wrap.querySelector('.progbar > span');
+  var label=wrap.querySelector('.prog-label');
+  if(bar){ bar.style.width=pct+"%"; bar.style.background=(pct===100?"var(--ok)":"var(--accent)"); }
+  if(label){ label.textContent=done+"/"+arr.length+" · "+pct+"%"; }
+  // sync the task row strike-through
+  var tasks=wrap.querySelectorAll('.task');
+  arr.forEach(function(t,i){ if(tasks[i]) tasks[i].classList.toggle("done", t.done); });
+}
+function addTask(seasonKey, text){
+  text=(text||"").trim(); if(!text) return;
+  data.seasonal[seasonKey].push({id:uid(), task:text, done:false, custom:true});
+  save(); renderSeasonal(); reopenSeason(seasonKey); updateCounts();
+}
+function delTask(seasonKey, id){
+  data.seasonal[seasonKey]=data.seasonal[seasonKey].filter(function(x){return x.id!==id;});
+  save(); renderSeasonal(); reopenSeason(seasonKey); renderDueSoon(); updateCounts();
+}
+function reopenSeason(seasonKey){
+  var wrap=document.querySelector('.season[data-season="'+seasonKey+'"]');
+  if(wrap) wrap.classList.add("open");
+}
+function resetSeasonChecks(){
+  if(!confirm("Uncheck every seasonal task across all four seasons?")) return;
+  SEASONS.forEach(function(s){ (data.seasonal[s.key]||[]).forEach(function(t){t.done=false;}); });
+  save(); renderSeasonal(); renderDueSoon(); updateCounts();
+}
+
+/* ---------- REPAIRS ---------- */
+function addRepair(){
+  var r={id:uid(), __col:"repairs", date:"", item:"", cost:"", contractor:"", notes:""};
+  data.repairs.unshift(r); save(); refreshYearFilter(); renderRepairs(); updateCounts(); switchTab("repairs");
+}
+function delRepair(id){
+  data.repairs=data.repairs.filter(function(x){return x.id!==id;});
+  save(); refreshYearFilter(); renderRepairs(); renderDueSoon(); updateCounts();
+}
+function repairYear(r){ var d=parseDate(r.date); return d? d.getFullYear():null; }
+function refreshYearFilter(){
+  var sel=document.getElementById("yearFilter");
+  var prev=sel.value;
+  var years={};
+  data.repairs.forEach(function(r){ var y=repairYear(r); if(y) years[y]=true; });
+  var list=Object.keys(years).sort(function(a,b){return b-a;});
+  sel.innerHTML='<option value="all">All years</option>'+list.map(function(y){return '<option value="'+y+'">'+y+'</option>';}).join("");
+  if(prev && (prev==="all"||years[prev])) sel.value=prev;
+}
+function renderRepairs(){
+  var body=document.getElementById("bodyRepairs");
+  var sel=document.getElementById("yearFilter");
+  var filter=sel.value||"all";
+  body.innerHTML="";
+  var rows = data.repairs.filter(function(r){ return filter==="all" || String(repairYear(r))===String(filter); });
+  if(!data.repairs.length){
+    body.innerHTML='<tr><td colspan="6"><div class="empty"><p>No repairs logged yet. Every time you spend money on the house, log it here — you\'ll thank yourself at tax time and at resale.</p>'
+      +'<button class="btn accent" onclick="addRepair()">+ Log your first repair</button></div></td></tr>';
+    renderRepairTotals(); return;
+  }
+  rows.forEach(function(r){
+    var tr=document.createElement("tr");
+    tr.innerHTML =
+      cell("date", r, "date") +
+      cell("text", r, "item", "What was done") +
+      '<td class="col-num"><input class="num" type="number" min="0" step="0.01" value="'+attr(r.cost)+'" placeholder="0.00" oninput="upd(\''+r.id+'\',\'repairs\',\'cost\',this.value)"></td>' +
+      cell("text", r, "contractor", "Who did it") +
+      cell("text", r, "notes", "Notes") +
+      '<td><button class="row-del" title="Delete" onclick="delRepair(\''+r.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+  renderRepairTotals();
+}
+function renderRepairTotals(){
+  var sel=document.getElementById("yearFilter");
+  var filter=sel.value||"all";
+  var rows=data.repairs.filter(function(r){ return filter==="all" || String(repairYear(r))===String(filter); });
+  var total=rows.reduce(function(s,r){return s+(Number(r.cost)||0);},0);
+  var lifetime=data.repairs.reduce(function(s,r){return s+(Number(r.cost)||0);},0);
+  document.getElementById("repairTotal").textContent=fmtMoney(total);
+  document.getElementById("repairEntries").textContent=rows.length;
+  document.getElementById("repairLifetime").textContent=fmtMoney(lifetime);
+  document.getElementById("totalYearLabel").textContent = filter==="all"?"all years":filter;
+}
+
+/* ---------- DOCUMENTS ---------- */
+var DOC_TYPES=["Receipt","Warranty","Manual","Insurance","Permit","Other"];
+function addDoc(){
+  var d={id:uid(), __col:"documents", label:"", type:"Receipt", location:"", notes:""};
+  data.documents.push(d); save(); renderDocs(); updateCounts(); switchTab("documents");
+}
+function delDoc(id){
+  data.documents=data.documents.filter(function(x){return x.id!==id;});
+  save(); renderDocs(); updateCounts();
+}
+function renderDocs(){
+  var body=document.getElementById("bodyDocs");
+  body.innerHTML="";
+  if(!data.documents.length){
+    body.innerHTML='<tr><td colspan="5"><div class="empty"><p>No documents yet. Log where your receipts, warranties and manuals live so you can find them the day something breaks.</p>'
+      +'<button class="btn accent" onclick="addDoc()">+ Add your first document</button></div></td></tr>';
+    return;
+  }
+  data.documents.forEach(function(d){
+    var opts=DOC_TYPES.map(function(t){return '<option '+(d.type===t?"selected":"")+'>'+t+'</option>';}).join("");
+    var tr=document.createElement("tr");
+    tr.innerHTML =
+      cell("text", d, "label", "e.g. Roof replacement receipt") +
+      '<td><select onchange="upd(\''+d.id+'\',\'documents\',\'type\',this.value)">'+opts+'</select></td>' +
+      cell("text", d, "location", "Drive link, email, file cabinet…") +
+      cell("text", d, "notes", "Notes") +
+      '<td><button class="row-del" title="Delete" onclick="delDoc(\''+d.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+}
+
+/* ---------- DUE SOON ROLLUP ---------- */
+function renderDueSoon(){
+  var t=todayMid();
+  var horizon=60;
+  // systems
+  var sysItems=[];
+  data.systems.forEach(function(sys){
+    var st=systemStatus(sys);
+    if(st.nd && st.days<=horizon){
+      sysItems.push({name:(sys.name||"(unnamed system)"), days:st.days, cls:st.cls, nd:st.nd});
+    }
+  });
+  sysItems.sort(function(a,b){return a.days-b.days;});
+
+  // seasonal: current season + any season starting within horizon
+  var seasonKeys={};
+  var cur=currentSeasonKey(); seasonKeys[cur]=true;
+  SEASONS.forEach(function(s){
+    var start=nextSeasonStart(s);
+    var d=daysBetween(t,start);
+    if(d>=0 && d<=horizon) seasonKeys[s.key]=true;
+  });
+  var seaItems=[];
+  Object.keys(seasonKeys).forEach(function(key){
+    var s=SEASONS.find(function(x){return x.key===key;});
+    (data.seasonal[key]||[]).forEach(function(task){
+      if(!task.done) seaItems.push({name:task.name||task.task, season:s.title, cur:(key===cur)});
+    });
+  });
+
+  var sysEl=document.getElementById("dueSystems");
+  var seaEl=document.getElementById("dueSeasonal");
+  sysEl.innerHTML="";
+  seaEl.innerHTML="";
+
+  if(!sysItems.length){
+    sysEl.innerHTML='<li class="due-empty">Nothing due in the next 60 days. ✓</li>';
+  }else{
+    sysItems.forEach(function(it){
+      var when = it.days<0 ? (Math.abs(it.days)+"d overdue") : (it.days===0?"today":"in "+it.days+"d");
+      var color = it.cls==="bad"?"var(--bad)":(it.cls==="warn"?"#9a6212":"var(--ok)");
+      var li=document.createElement("li");
+      li.onclick=function(){switchTab("systems");};
+      li.innerHTML='<span class="chip '+it.cls+'" style="padding:2px 7px"></span><span>'+esc(it.name)+'</span><span class="when" style="color:'+color+'">'+when+'</span>';
+      sysEl.appendChild(li);
+    });
+  }
+
+  if(!seaItems.length){
+    seaEl.innerHTML='<li class="due-empty">Seasonal list is clear. ✓</li>';
+  }else{
+    seaItems.slice(0,12).forEach(function(it){
+      var li=document.createElement("li");
+      li.onclick=function(){switchTab("seasonal");};
+      li.innerHTML='<span style="color:var(--accent);flex:0 0 auto">○</span><span>'+esc(it.name)+'</span><span class="when" style="color:var(--muted)">'+esc(it.season)+'</span>';
+      seaEl.appendChild(li);
+    });
+    if(seaItems.length>12){
+      var li=document.createElement("li");
+      li.className="due-empty";
+      li.textContent="+ "+(seaItems.length-12)+" more seasonal tasks";
+      seaEl.appendChild(li);
+    }
+  }
+  document.getElementById("dueCount").textContent = sysItems.length + seaItems.length;
+}
+function nextSeasonStart(s){
+  var t=todayMid();
+  var y=t.getFullYear();
+  var start=new Date(y, s.start[0], s.start[1]); start.setHours(0,0,0,0);
+  if(start < t) start=new Date(y+1, s.start[0], s.start[1]);
+  return start;
+}
+
+/* ====================================================================
+   TABS
+   ==================================================================== */
+function switchTab(name){
+  document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tab")===name); });
+  document.querySelectorAll(".panel").forEach(function(p){ p.classList.toggle("active", p.id==="panel-"+name); });
+  try{ localStorage.setItem(ACTIVE_TAB_KEY, name); }catch(e){}
+}
+document.getElementById("tabs").addEventListener("click", function(e){
+  var btn=e.target.closest(".tab"); if(btn) switchTab(btn.getAttribute("data-tab"));
+});
+
+/* ====================================================================
+   EXPORT / IMPORT
+   ==================================================================== */
+function csvCell(v){ return '"'+esc(v).replace(/"/g,'""')+'"'; }
+function csvRow(arr){ return arr.map(csvCell).join(",")+"\r\n"; }
+
+function exportCSV(){
+  var out="";
+  out+="THE HOME OPERATIONS SYSTEM — EXPORT\r\n";
+  out+=csvRow(["Generated", new Date().toString()]);
+  out+="\r\n";
+
+  out+="SYSTEMS & APPLIANCES\r\n";
+  out+=csvRow(["Name","Location","Brand/Model","Installed","Warranty ends","Last service","Interval (months)","Next due","Status"]);
+  data.systems.forEach(function(s){
+    var st=systemStatus(s);
+    out+=csvRow([s.name,s.location,s.brand,s.installDate,s.warrantyExpiry,s.lastService,s.intervalMonths, st.nd?fmtDate(st.nd):"", st.label]);
+  });
+  out+="\r\n";
+
+  out+="SEASONAL MAINTENANCE\r\n";
+  out+=csvRow(["Season","Task","Done"]);
+  SEASONS.forEach(function(se){
+    (data.seasonal[se.key]||[]).forEach(function(t){ out+=csvRow([se.title, t.task, t.done?"yes":"no"]); });
+  });
+  out+="\r\n";
+
+  out+="REPAIR & COST LOG\r\n";
+  out+=csvRow(["Date","Item","Cost","Contractor","Notes"]);
+  data.repairs.forEach(function(r){ out+=csvRow([r.date,r.item,r.cost,r.contractor,r.notes]); });
+  var lifetime=data.repairs.reduce(function(s,r){return s+(Number(r.cost)||0);},0);
+  out+=csvRow(["","TOTAL",lifetime,"",""]);
+  out+="\r\n";
+
+  out+="DOCUMENT VAULT\r\n";
+  out+=csvRow(["Label","Type","Location/Link","Notes"]);
+  data.documents.forEach(function(d){ out+=csvRow([d.label,d.type,d.location,d.notes]); });
+
+  downloadFile("home-operations-export-"+dateStamp()+".csv", out, "text/csv");
+  toast("CSV exported.");
+}
+
+function exportBackup(){
+  var payload={app:"home-operations-system", version:1, exported:new Date().toISOString(), data:data};
+  downloadFile("home-operations-backup-"+dateStamp()+".json", JSON.stringify(payload,null,2), "application/json");
+  toast("Backup saved. Keep it safe — Import restores everything.");
+}
+
+function importBackup(evt){
+  var file=evt.target.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var parsed=JSON.parse(reader.result);
+      var incoming = parsed.data ? parsed.data : parsed;
+      if(!incoming || (!incoming.systems && !incoming.seasonal && !incoming.repairs && !incoming.documents)){
+        throw new Error("Unrecognised file");
+      }
+      if(!confirm("Import this backup? It will REPLACE all current data in this browser.")) { evt.target.value=""; return; }
+      data = {
+        systems: incoming.systems||[],
+        seasonal: incoming.seasonal||blankData().seasonal,
+        repairs: incoming.repairs||[],
+        documents: incoming.documents||[]
+      };
+      // ensure __col tags + ids
+      data.systems.forEach(function(s){ s.__col="systems"; if(!s.id) s.id=uid(); });
+      data.repairs.forEach(function(r){ r.__col="repairs"; if(!r.id) r.id=uid(); });
+      data.documents.forEach(function(d){ d.__col="documents"; if(!d.id) d.id=uid(); });
+      SEASONS.forEach(function(se){ (data.seasonal[se.key]||[]).forEach(function(t){ if(!t.id) t.id=uid(); }); });
+      save(); refreshYearFilter(); renderAll();
+      toast("Backup imported successfully.");
+    }catch(e){
+      alert("Could not import that file. Make sure it's a Backup (.json) exported from this tool.\n\n("+e.message+")");
+    }
+    evt.target.value="";
+  };
+  reader.readAsText(file);
+}
+
+function downloadFile(name, content, mime){
+  var blob=new Blob([content],{type:mime});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },100);
+}
+function dateStamp(){ var d=new Date(); function p(n){return (n<10?"0":"")+n;} return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate()); }
+
+/* toast */
+var toastTimer;
+function toast(msg){
+  var el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ el.classList.remove("show"); }, 2600);
+}
+
+/* ====================================================================
+   INIT — tag collections so generic upd() works, then render
+   ==================================================================== */
+(function init(){
+  data.systems.forEach(function(s){ s.__col="systems"; if(!s.id) s.id=uid(); });
+  data.repairs.forEach(function(r){ r.__col="repairs"; if(!r.id) r.id=uid(); });
+  data.documents.forEach(function(d){ d.__col="documents"; if(!d.id) d.id=uid(); });
+  refreshYearFilter();
+  renderAll();
+  var saved=null; try{ saved=localStorage.getItem(ACTIVE_TAB_KEY); }catch(e){}
+  if(saved) switchTab(saved);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Home Operations System — run your house like it's run by someone who knows what they're doing</title>
+<meta name="description" content="A working dashboard that tracks every system in your home, calculates what's due next, and flags the expensive failures before they happen. The average homeowner spends $8,808 a year on maintenance. Most have no system. This is the system." />
+<meta property="og:title" content="The Home Operations System" />
+<meta property="og:description" content="Stop guessing when the furnace was last serviced. Track every system, every cost, every deadline — in one tool that runs offline and belongs to you." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F6F1;
+    --surface:#FFFFFF;
+    --ink:#16324F;
+    --accent:#E0922F;
+    --accent-deep:#C97A1C;
+    --muted:#5A6B75;
+    --hair:#E2DED4;
+    --hair-strong:#CBD3D8;
+    --bad:#C0492F;
+    --display:"Space Grotesk", system-ui, sans-serif;
+    --body:"Inter", system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4{font-family:var(--display);font-weight:700;line-height:1.08;letter-spacing:-.02em;}
+  a{color:inherit;}
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 24px;}
+  .narrow{max-width:760px;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    font-family:var(--display);font-weight:600;font-size:17px;text-decoration:none;cursor:pointer;
+    background:var(--accent);color:#2a1c06;border:1px solid var(--accent);border-radius:10px;
+    padding:16px 30px;transition:transform .05s ease, filter .15s ease, box-shadow .2s ease;
+    box-shadow:0 1px 0 rgba(22,50,79,.04);
+  }
+  .btn:hover{filter:brightness(1.04);box-shadow:0 8px 22px rgba(224,146,47,.28);}
+  .btn:active{transform:translateY(1px);}
+  .btn .price{background:rgba(22,50,79,.12);border-radius:6px;padding:2px 9px;font-size:15px;}
+  .btn.lg{font-size:19px;padding:18px 36px;}
+
+  .kicker{font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);}
+
+  /* NAV */
+  nav.site{position:sticky;top:0;z-index:30;background:rgba(248,246,241,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);}
+  nav.site .row{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.01em;}
+  .logo .mk{width:30px;height:30px;border:2px solid var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink);}
+  nav .btn{padding:10px 18px;font-size:15px;}
+
+  /* HERO */
+  header.hero{padding:78px 0 60px;position:relative;overflow:hidden;}
+  .hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--hair) 1px,transparent 1px),linear-gradient(90deg,var(--hair) 1px,transparent 1px);background-size:34px 34px;opacity:.5;mask-image:radial-gradient(ellipse 70% 60% at 70% 20%,#000 0%,transparent 75%);}
+  .hero .wrap{position:relative;}
+  .hero h1{font-size:clamp(38px,6vw,64px);max-width:16ch;margin:18px 0 0;}
+  .hero h1 .hl{color:var(--accent-deep);}
+  .hero .sub{font-size:clamp(18px,2.4vw,22px);color:var(--muted);max-width:54ch;margin:22px 0 32px;line-height:1.5;}
+  .hero .cta-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .hero .reassure{font-size:14px;color:var(--muted);}
+  .hero .reassure b{color:var(--ink);}
+
+  /* STAT BAND */
+  .stats{border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);background:var(--ink);color:#fff;}
+  .stats .grid{display:grid;grid-template-columns:repeat(3,1fr);}
+  .stats .cell{padding:34px 26px;border-right:1px solid rgba(255,255,255,.12);}
+  .stats .cell:last-child{border-right:none;}
+  .stats .n{font-family:var(--display);font-weight:700;font-size:clamp(30px,4vw,42px);color:var(--accent);letter-spacing:-.02em;}
+  .stats .d{font-size:15px;color:#C4D2DE;margin-top:6px;line-height:1.45;}
+  @media(max-width:720px){.stats .grid{grid-template-columns:1fr;}.stats .cell{border-right:none;border-bottom:1px solid rgba(255,255,255,.12);}}
+
+  /* SECTIONS */
+  section{padding:74px 0;}
+  section.tight{padding:54px 0;}
+  .sec-head{max-width:62ch;margin-bottom:40px;}
+  .sec-head h2{font-size:clamp(28px,4vw,40px);margin:14px 0 0;}
+  .sec-head p{color:var(--muted);font-size:19px;margin-top:16px;}
+
+  .lede{font-size:clamp(20px,2.6vw,26px);line-height:1.5;font-weight:500;}
+  .lede .em{color:var(--accent-deep);font-weight:600;}
+
+  /* MODULE CARDS */
+  .modules{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  @media(max-width:760px){.modules{grid-template-columns:1fr;}}
+  .mod{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:28px;position:relative;transition:border-color .2s, transform .2s;}
+  .mod:hover{border-color:var(--hair-strong);transform:translateY(-2px);}
+  .mod .num{font-family:var(--display);font-weight:700;font-size:14px;color:var(--accent-deep);border:1px solid var(--accent);border-radius:7px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+  .mod h3{font-size:21px;margin:16px 0 8px;}
+  .mod p{color:var(--muted);font-size:16px;line-height:1.55;}
+  .mod .tag{display:inline-block;margin-top:14px;font-size:12.5px;font-weight:600;font-family:var(--display);letter-spacing:.03em;color:var(--ink);background:var(--bg);border:1px solid var(--hair);border-radius:20px;padding:4px 11px;}
+
+  /* PROBLEM list */
+  .pains{display:grid;grid-template-columns:1fr 1fr;gap:14px 30px;margin-top:8px;}
+  @media(max-width:680px){.pains{grid-template-columns:1fr;}}
+  .pain{display:flex;gap:13px;align-items:flex-start;font-size:17px;padding:6px 0;}
+  .pain .x{flex:0 0 auto;width:24px;height:24px;border-radius:6px;background:#F7E4DF;color:var(--bad);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-top:1px;}
+
+  /* WHY / not a pdf */
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:760px){.why{grid-template-columns:1fr;}}
+  .why .col{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:28px;}
+  .why .col.bad{background:#FBF1EE;border-color:#EAD3CC;}
+  .why h4{font-size:14px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;font-family:var(--display);}
+  .why .col.bad h4{color:var(--bad);}
+  .why ul{list-style:none;display:flex;flex-direction:column;gap:11px;}
+  .why li{display:flex;gap:11px;font-size:16px;color:var(--ink);line-height:1.45;}
+  .why li .i{flex:0 0 auto;font-weight:700;}
+  .why .col.bad li .i{color:var(--bad);}
+  .why .col.good li .i{color:#2F8F5B;}
+
+  /* feature strip */
+  .feat-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .feat{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--hair);border-radius:30px;padding:9px 16px;font-size:14.5px;font-weight:500;}
+  .feat .d{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+
+  /* OFFER */
+  .offer{background:var(--ink);color:#fff;border-radius:20px;padding:clamp(34px,5vw,56px);position:relative;overflow:hidden;}
+  .offer .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:34px 34px;}
+  .offer .inner{position:relative;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;}
+  @media(max-width:760px){.offer .inner{grid-template-columns:1fr;gap:28px;}}
+  .offer h2{font-size:clamp(28px,4vw,40px);color:#fff;}
+  .offer p{color:#C4D2DE;font-size:18px;margin-top:16px;}
+  .offer .checklist{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:10px;}
+  .offer .checklist li{display:flex;gap:11px;font-size:16px;color:#E8EEF3;}
+  .offer .checklist .c{color:var(--accent);font-weight:700;}
+  .price-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:30px;text-align:center;}
+  .price-card .amt{font-family:var(--display);font-weight:700;font-size:58px;line-height:1;letter-spacing:-.03em;}
+  .price-card .amt sup{font-size:26px;top:-.6em;color:var(--accent);}
+  .price-card .once{font-size:14px;color:#A9C0D4;margin:8px 0 22px;letter-spacing:.04em;text-transform:uppercase;}
+  .price-card .btn{width:100%;}
+  .price-card .fine{font-size:13px;color:#A9C0D4;margin-top:14px;}
+
+  /* FAQ */
+  .faq details{border-bottom:1px solid var(--hair);padding:6px 0;}
+  .faq summary{cursor:pointer;list-style:none;padding:20px 4px;font-family:var(--display);font-weight:600;font-size:19px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";font-size:24px;color:var(--accent-deep);transition:transform .2s;}
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq p{padding:0 4px 22px;color:var(--muted);font-size:16.5px;max-width:70ch;}
+
+  footer.foot{border-top:1px solid var(--hair);padding:46px 0;color:var(--muted);font-size:14px;}
+  footer.foot .row{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;}
+  footer.foot a{color:var(--muted);text-decoration:none;}
+  footer.foot a:hover{color:var(--ink);}
+
+  .center{text-align:center;}
+  .mt-cta{margin-top:34px;}
+</style>
+</head>
+<body>
+
+<nav class="site">
+  <div class="row">
+    <a class="logo" href="/"><span class="mk">HO</span> Built by Systems</a>
+    <!-- Replace href="#buy" with your Stan Store checkout URL for this product -->
+    <a class="btn" href="#buy">Get the System <span class="price">$37</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <span class="kicker">The Home Operations System</span>
+    <h1>Your house is the most expensive thing you own. <span class="hl">Run it like one.</span></h1>
+    <p class="sub">Most homeowners manage a six-figure asset with a junk drawer and a memory. This is the dashboard that tracks every system, calculates what's due next, and warns you before a skipped service turns into a five-figure repair.</p>
+    <div class="cta-row">
+      <!-- Replace href="#buy" with your Stan Store checkout URL -->
+      <a class="btn lg" href="#buy">Get the System <span class="price">$37</span></a>
+      <span class="reassure">One-time payment · <b>Yours forever</b> · Works offline · No subscription</span>
+    </div>
+  </div>
+</header>
+
+<section class="stats tight">
+  <div class="grid">
+    <div class="cell">
+      <div class="n">$8,808</div>
+      <div class="d">What the average US homeowner spent on maintenance in 2025 — up <b>42%</b> since 2020.</div>
+    </div>
+    <div class="cell">
+      <div class="n">55%</div>
+      <div class="d">Got hit with a <b>major unexpected repair</b> in the last year. The kind you didn't budget for.</div>
+    </div>
+    <div class="cell">
+      <div class="n">97%</div>
+      <div class="d">Say home maintenance matters — but <b>almost none</b> have an actual system to stay on top of it.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap narrow">
+    <p class="lede">Here's the truth: homes don't fail randomly. They fail on a schedule you forgot to track. The water heater that goes at year 12. The furnace that dies the week you stopped servicing it. The roof warranty that lapsed two years before the leak. <span class="em">Every one of those was predictable — and preventable — with a system.</span></p>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Sound familiar?</span>
+      <h2>What "no system" actually costs you</h2>
+    </div>
+    <div class="pains">
+      <div class="pain"><span class="x">✕</span><span>You have no idea when the furnace or water heater was last serviced.</span></div>
+      <div class="pain"><span class="x">✕</span><span>Warranties expire silently — you find out the day after something breaks.</span></div>
+      <div class="pain"><span class="x">✕</span><span>Seasonal jobs slip until the gutters overflow or the pipes freeze.</span></div>
+      <div class="pain"><span class="x">✕</span><span>You can't remember which contractor did what, or what you paid.</span></div>
+      <div class="pain"><span class="x">✕</span><span>Receipts and manuals are scattered across email, drawers, and the cloud.</span></div>
+      <div class="pain"><span class="x">✕</span><span>At resale, you can't prove a thing about how the home was cared for.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">What it is</span>
+      <h2>One dashboard. Every system in your home. Always knows what's next.</h2>
+      <p>The Home Operations System is a working tool — not a PDF, not a printable. Open it and you get a live command center for your house. It does the tracking and the math so nothing slips.</p>
+    </div>
+    <div class="modules">
+      <div class="mod">
+        <div class="num">01</div>
+        <h3>Due Soon rollup</h3>
+        <p>The first thing you see. Everything coming due in the next 60 days — across systems and seasonal tasks — pulled into one list. Open it once a month and you're never blindsided.</p>
+        <span class="tag">Your early-warning system</span>
+      </div>
+      <div class="mod">
+        <div class="num">02</div>
+        <h3>Systems &amp; Appliances register</h3>
+        <p>Log every system — furnace, HVAC, water heater, roof, sump pump, appliances — with install date, warranty, last service and interval. It auto-calculates the next-due date and flags each one <b>green, amber or red</b>.</p>
+        <span class="tag">Auto-calculated deadlines</span>
+      </div>
+      <div class="mod">
+        <div class="num">03</div>
+        <h3>Seasonal maintenance schedule</h3>
+        <p>Four seasons, each pre-loaded with the standard homeowner checklist — roughly 40 tasks in total. Check them off, watch your progress per season, add your own. The routine that prevents the expensive failures.</p>
+        <span class="tag">~40 tasks, ready to go</span>
+      </div>
+      <div class="mod">
+        <div class="num">04</div>
+        <h3>Repair &amp; cost log</h3>
+        <p>Every dollar that goes into the house — date, item, cost, contractor, notes — with a running annual total and a year filter. Walk into tax season, an insurance claim, or a sale with a complete record.</p>
+        <span class="tag">Running annual totals</span>
+      </div>
+      <div class="mod">
+        <div class="num">05</div>
+        <h3>Document vault</h3>
+        <p>One index for every receipt, warranty and manual: what it is, where it lives, and the details that matter. Find the paperwork the day something breaks — not three drawers later.</p>
+        <span class="tag">Find it in seconds</span>
+      </div>
+      <div class="mod">
+        <div class="num">06</div>
+        <h3>Export, print &amp; back up</h3>
+        <p>Export everything to CSV for your spreadsheet or accountant. Print a clean copy for a binder or a buyer. Save a full backup and restore it on any device. Your data is yours — fully portable.</p>
+        <span class="tag">CSV · Print · Backup</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Why it's different</span>
+      <h2>A real tool — not another PDF you'll never open</h2>
+    </div>
+    <div class="why">
+      <div class="col bad">
+        <h4>The usual "home maintenance" download</h4>
+        <ul>
+          <li><span class="i">✕</span> A static printable you fill in once and abandon.</li>
+          <li><span class="i">✕</span> Does no math — you still track every deadline yourself.</li>
+          <li><span class="i">✕</span> No warning when something's overdue.</li>
+          <li><span class="i">✕</span> Lives in a downloads folder, forgotten by week two.</li>
+        </ul>
+      </div>
+      <div class="col good">
+        <h4>The Home Operations System</h4>
+        <ul>
+          <li><span class="i">✓</span> A working dashboard that calculates next-due dates for you.</li>
+          <li><span class="i">✓</span> Flags every system green / amber / red automatically.</li>
+          <li><span class="i">✓</span> Surfaces what's coming the moment you open it.</li>
+          <li><span class="i">✓</span> Runs offline, saves itself, and belongs to you forever.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="feat-row">
+      <span class="feat"><span class="d"></span> Works 100% offline</span>
+      <span class="feat"><span class="d"></span> No login, no account</span>
+      <span class="feat"><span class="d"></span> Saves automatically</span>
+      <span class="feat"><span class="d"></span> Export to CSV</span>
+      <span class="feat"><span class="d"></span> Print-friendly view</span>
+      <span class="feat"><span class="d"></span> Full backup &amp; restore</span>
+      <span class="feat"><span class="d"></span> One file, any device</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Who it's for</span>
+      <h2>For people who'd rather prevent the bill than pay it</h2>
+    </div>
+    <div class="modules">
+      <div class="mod">
+        <h3>The serious homeowner</h3>
+        <p>You own a real asset and you want it managed like one — proactively, on a schedule, with a record you can stand behind.</p>
+      </div>
+      <div class="mod">
+        <h3>The newly overwhelmed</h3>
+        <p>You just realized a house is a full-time operation and nobody handed you the manual. This is the manual — and the dashboard to run it.</p>
+      </div>
+      <div class="mod">
+        <h3>The resale-minded</h3>
+        <p>You know a documented maintenance history sells the house. Start the record now; hand over a clean export later.</p>
+      </div>
+      <div class="mod">
+        <h3>The spreadsheet-tired</h3>
+        <p>You've tried to build this yourself in a spreadsheet three times. This is the version that's actually finished — and does the math.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="buy">
+  <div class="wrap">
+    <div class="offer">
+      <div class="grid-bg"></div>
+      <div class="inner">
+        <div>
+          <h2>Stop managing a six-figure asset from memory.</h2>
+          <p>One payment. Yours forever. Set it up this weekend and never wonder "when did we last service that?" again.</p>
+          <ul class="checklist">
+            <li><span class="c">✓</span> The complete Home Operations dashboard</li>
+            <li><span class="c">✓</span> Pre-loaded seasonal checklist (~40 tasks)</li>
+            <li><span class="c">✓</span> Auto-calculated service deadlines &amp; status flags</li>
+            <li><span class="c">✓</span> Repair log, document vault &amp; CSV export</li>
+            <li><span class="c">✓</span> Works offline · saves automatically · no subscription</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <div class="amt"><sup>$</sup>37</div>
+          <div class="once">One-time · yours forever</div>
+          <!-- Replace href="#" with your Stan Store checkout URL -->
+          <a class="btn lg" href="#">Get instant access</a>
+          <div class="fine">Instant download · works on any device</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tight faq">
+  <div class="wrap narrow">
+    <div class="sec-head">
+      <span class="kicker">Questions</span>
+      <h2>Before you buy</h2>
+    </div>
+    <details open>
+      <summary>Is this a PDF or a real tool?</summary>
+      <p>A real tool. It's a single web file that opens in any browser and works like an app — you type in your systems and it does the tracking, the math, and the warnings. Nothing to install.</p>
+    </details>
+    <details>
+      <summary>Where is my data stored? Is it private?</summary>
+      <p>Everything is saved locally in your own browser. Nothing is uploaded, nothing is sent anywhere, and there's no account. It works completely offline. Use Backup to save a copy and move it between devices.</p>
+    </details>
+    <details>
+      <summary>Do I need to be technical?</summary>
+      <p>No. If you can fill in a form, you can run it. Open the file, add your systems, check off seasonal tasks. The Due Soon list tells you what needs attention each time you open it.</p>
+    </details>
+    <details>
+      <summary>Will it work on my phone?</summary>
+      <p>Yes. It's responsive and runs on desktop, tablet and phone. Your data lives in whichever browser you open it in — use Backup &amp; Import to keep them in sync.</p>
+    </details>
+    <details>
+      <summary>Is it a subscription?</summary>
+      <p>No. One payment, yours forever. No logins, no monthly fee, nothing to renew.</p>
+    </details>
+  </div>
+</section>
+
+<section class="center tight">
+  <div class="wrap narrow">
+    <h2 style="font-size:clamp(26px,4vw,38px)">The next repair is coming. The only question is whether you saw it first.</h2>
+    <div class="mt-cta">
+      <!-- Replace href="#" with your Stan Store checkout URL -->
+      <a class="btn lg" href="#">Get the Home Operations System <span class="price">$37</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap row">
+    <span>© Built by Systems — tools that actually do the job.</span>
+    <span><a href="/">builtbysystems.online</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
