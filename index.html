@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#F6F4EF;
@@ -235,6 +236,89 @@
     html{scroll-behavior:auto;}
   }
 </style>
+
+<!-- ===== Home-management line section (self-contained, navy/amber product theme) ===== -->
+<style>
+  .homeline{
+    background:#F8F6F1;
+    color:#16324F;
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    border-bottom:1px solid #E2DED4;
+    padding:88px 0;
+  }
+  .homeline *{box-sizing:border-box;}
+  .homeline .hl-wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+  .homeline .hl-kicker{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:600;font-size:13px;
+    letter-spacing:.14em;text-transform:uppercase;color:#C97A1C;margin:0;
+  }
+  .homeline .hl-head{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;
+    font-size:clamp(30px,4.6vw,50px);line-height:1.07;letter-spacing:-.02em;
+    color:#16324F;max-width:22ch;margin:16px 0 0;
+  }
+  .homeline .hl-head .amt{color:#C97A1C;}
+  .homeline .hl-sub{
+    font-size:clamp(17px,2vw,20px);color:#5A6B75;max-width:62ch;margin:18px 0 0;line-height:1.5;
+  }
+  .homeline .hl-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:48px;align-items:stretch;
+  }
+  .homeline .hl-card{
+    position:relative;display:flex;flex-direction:column;background:#FFFFFF;
+    border:1px solid #E2DED4;border-radius:14px;padding:26px 24px;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  }
+  .homeline .hl-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(22,50,79,.08);border-color:#CBD3D8;}
+  .homeline .hl-pr{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;font-size:15px;color:#16324F;
+    border:1px solid #E2DED4;border-radius:20px;padding:3px 12px;align-self:flex-start;
+  }
+  .homeline .hl-card h3{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;font-size:20px;
+    line-height:1.16;letter-spacing:-.01em;color:#16324F;margin:18px 0 10px;
+  }
+  .homeline .hl-card .hook{font-size:15px;color:#5A6B75;line-height:1.55;flex:1;margin:0;}
+  .homeline .hl-actions{display:flex;flex-direction:column;gap:11px;margin-top:24px;}
+  .homeline .hl-buy{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:600;font-size:15px;text-decoration:none;
+    background:#E0922F;color:#2a1c06;border:1px solid #E0922F;border-radius:10px;padding:13px 18px;
+    transition:filter .15s ease,box-shadow .2s ease,transform .05s ease;
+  }
+  .homeline .hl-buy:hover{filter:brightness(1.04);box-shadow:0 8px 20px rgba(224,146,47,.26);transform:translateY(-1px);}
+  .homeline .hl-learn{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:600;font-size:14px;
+    color:#C97A1C;text-decoration:none;text-align:center;
+  }
+  .homeline .hl-learn:hover{text-decoration:underline;text-underline-offset:2px;}
+  /* featured / most popular */
+  .homeline .hl-card.featured{border:2px solid #E0922F;box-shadow:0 14px 38px rgba(224,146,47,.17);}
+  .homeline .hl-badge{
+    position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+    background:#16324F;color:#fff;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:20px;
+    white-space:nowrap;box-shadow:0 4px 12px rgba(22,50,79,.22);
+  }
+  .homeline .hl-foot{
+    text-align:center;color:#5A6B75;font-size:15px;margin:40px 0 0;
+    font-family:"Inter",system-ui,sans-serif;
+  }
+  @media (min-width:981px){
+    .homeline .hl-card.featured{transform:translateY(-12px);}
+    .homeline .hl-card.featured:hover{transform:translateY(-16px);}
+  }
+  @media (max-width:980px){
+    .homeline{padding:64px 0;}
+    .homeline .hl-grid{grid-template-columns:repeat(2,1fr);gap:16px;margin-top:38px;}
+  }
+  @media (max-width:560px){
+    .homeline .hl-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .homeline .hl-card,.homeline .hl-card.featured{transition:none;}
+  }
+</style>
 </head>
 <body>
 
@@ -242,6 +326,7 @@
     <div class="wrap bar">
       <a class="brand" href="/">Built by <span>Systems</span></a>
       <nav>
+        <a href="#home-tools">Home tools</a>
         <a href="#what">What it is</a>
         <a href="#start">Start</a>
       </nav>
@@ -249,6 +334,63 @@
   </header>
 
   <main>
+
+    <!-- ===== Home-management product line-up ===== -->
+    <section class="homeline" id="home-tools">
+      <div class="hl-wrap">
+        <p class="hl-kicker">The home-management line</p>
+        <h2 class="hl-head">Your house costs you <span class="amt">$8,808</span> a year. Most people manage it with sticky notes.</h2>
+        <p class="hl-sub">One system per job — track it, protect it, never get blindsided. One-time purchase, you own it, no app subscription.</p>
+
+        <div class="hl-grid">
+
+          <div class="hl-card" id="first-year-homeowner">
+            <span class="hl-pr">$19</span>
+            <h3>The First-Year Homeowner Kit</h3>
+            <p class="hook">Just bought a house and nobody handed you the manual? Your first 12 months, on rails.</p>
+            <div class="hl-actions">
+              <a class="hl-buy" href="{{STAN_STORE_FIRST_YEAR_HOMEOWNER_URL}}">Buy — $19</a>
+              <a class="hl-learn" href="https://builtbysystems.online/first-year-homeowner/">Learn more →</a>
+            </div>
+          </div>
+
+          <div class="hl-card featured" id="home-operations-system">
+            <span class="hl-badge">★ Most popular</span>
+            <span class="hl-pr">$37</span>
+            <h3>The Home Operations System</h3>
+            <p class="hook">Every appliance, repair, schedule, and document in one operations brain. Nothing surprises you.</p>
+            <div class="hl-actions">
+              <a class="hl-buy" href="{{STAN_STORE_HOME_OPERATIONS_SYSTEM_URL}}">Buy — $37</a>
+              <a class="hl-learn" href="https://builtbysystems.online/home-operations-system/">Learn more →</a>
+            </div>
+          </div>
+
+          <div class="hl-card" id="home-inventory-vault">
+            <span class="hl-pr">$27</span>
+            <h3>The Home Inventory &amp; Insurance Vault</h3>
+            <p class="hook">After a fire or theft, the insurer asks you to prove what you owned. This is the record that gets claims paid.</p>
+            <div class="hl-actions">
+              <a class="hl-buy" href="{{STAN_STORE_HOME_INVENTORY_VAULT_URL}}">Buy — $27</a>
+              <a class="hl-learn" href="https://builtbysystems.online/home-inventory-vault/">Learn more →</a>
+            </div>
+          </div>
+
+          <div class="hl-card" id="multi-property-edition">
+            <span class="hl-pr">$67</span>
+            <h3>The Multi-Property Edition</h3>
+            <p class="hook">Two or more homes or rentals? One operations brain for the whole portfolio.</p>
+            <div class="hl-actions">
+              <a class="hl-buy" href="{{STAN_STORE_MULTI_PROPERTY_EDITION_URL}}">Buy — $67</a>
+              <a class="hl-learn" href="https://builtbysystems.online/multi-property-edition/">Learn more →</a>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="hl-foot">Built to run offline. Your data stays yours.</p>
+      </div>
+    </section>
+
     <section class="hero">
       <div class="wrap">
         <p class="label fade d1">Built by Systems · Digital products</p>

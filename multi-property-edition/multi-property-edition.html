@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Multi-Property Edition</title>
+<style>
+  :root{
+    --bg:#F8F6F1; --surface:#FFFFFF; --ink:#16324F; --accent:#E0922F;
+    --muted:#5A6B75; --hair:#E2DED4; --hair-strong:#CBD3D8;
+    --ok:#2F8F5B; --ok-bg:#E7F2EC; --warn:#E0922F; --warn-bg:#FBEFDD; --bad:#C0492F; --bad-bg:#F7E4DF;
+    --shadow:0 1px 2px rgba(22,50,79,.05);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+
+  header.top{background:var(--ink);color:#fff;border-bottom:3px solid var(--accent);}
+  .top-inner{max-width:1200px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand .mark{width:40px;height:40px;border:2px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-weight:800;font-size:15px;color:var(--accent);letter-spacing:.5px;}
+  .brand h1{font-size:20px;font-weight:800;letter-spacing:-.2px;line-height:1.1;}
+  .brand .sub{font-size:12px;color:#A9C0D4;letter-spacing:.04em;text-transform:uppercase;margin-top:3px;}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{appearance:none;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:transform .04s,box-shadow .15s,background .15s;line-height:1;}
+  .btn:hover{box-shadow:var(--shadow);}
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:transparent;border-color:rgba(255,255,255,.3);color:#fff;}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#2a1c06;}
+  .btn.accent:hover{filter:brightness(1.04);}
+  .btn.sm{padding:6px 10px;font-size:12px;}
+  .btn.danger{color:var(--bad);border-color:var(--bad-bg);}
+  .btn.danger:hover{background:var(--bad-bg);}
+
+  /* property switcher */
+  .switcher{display:flex;gap:8px;align-items:center;margin:22px 0 0;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--hair);}
+  .pchip{appearance:none;font-family:inherit;cursor:pointer;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 15px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:9px;transition:border-color .15s,box-shadow .15s,transform .05s;}
+  .pchip:hover{box-shadow:var(--shadow);}
+  .pchip.active{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(224,146,47,.14);}
+  .pchip .ico{font-size:15px;}
+  .pchip.portfolio{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .pchip.portfolio.active{box-shadow:0 0 0 3px rgba(22,50,79,.18);}
+  .pchip .meta{font-size:11px;font-weight:600;color:var(--muted);}
+  .pchip.active .meta{color:var(--accent);}
+  .pchip .dot{width:8px;height:8px;border-radius:50%;}
+  .pchip .dot.bad{background:var(--bad);} .pchip .dot.warn{background:var(--warn);} .pchip .dot.ok{background:var(--ok);}
+  .addprop{border-style:dashed;color:var(--muted);}
+
+  /* generic tabs (sub) */
+  .tabs{display:flex;gap:4px;margin:22px 0 0;border-bottom:2px solid var(--hair);flex-wrap:wrap;}
+  .tab{appearance:none;border:none;background:transparent;font-family:inherit;cursor:pointer;padding:12px 18px;font-size:14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:8px;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--ink);border-bottom-color:var(--accent);}
+  .tab .pill{background:var(--bg);border:1px solid var(--hair);border-radius:20px;font-size:11px;padding:1px 8px;font-weight:700;color:var(--muted);}
+
+  .panel{display:none;padding:26px 0 60px;}
+  .panel.active{display:block;}
+  .panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .panel-head h2{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+  .panel-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:64ch;}
+  .panel-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+  /* stat cards */
+  .statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  @media(max-width:820px){.statrow{grid-template-columns:1fr 1fr;}}
+  .stat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);}
+  .stat.lead{border-left:4px solid var(--accent);}
+  .stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .stat .v{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-top:3px;}
+
+  /* due/cost cards */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:820px){.two-col{grid-template-columns:1fr;}}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
+  .card.due{border-left:4px solid var(--accent);}
+  .card h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px;}
+  .due-list{list-style:none;display:flex;flex-direction:column;gap:7px;}
+  .due-list li{display:flex;align-items:center;gap:10px;font-size:14px;padding:6px 7px;border-radius:6px;cursor:pointer;}
+  .due-list li:hover{background:var(--bg);}
+  .due-list .tag{font-size:11px;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--hair);border-radius:20px;padding:1px 8px;white-space:nowrap;}
+  .due-list .when{margin-left:auto;font-size:12px;font-weight:700;white-space:nowrap;}
+  .due-empty{color:var(--muted);font-style:italic;font-size:14px;}
+  .bar-row{margin-bottom:13px;}
+  .bar-row .lbl{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px;}
+  .bar-row .lbl .amt{font-weight:700;}
+  .bar-track{height:10px;background:var(--bg);border:1px solid var(--hair);border-radius:20px;overflow:hidden;}
+  .bar-track>span{display:block;height:100%;background:var(--accent);border-radius:20px;}
+
+  /* property summary cards */
+  .prop-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  @media(max-width:900px){.prop-cards{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){.prop-cards{grid-template-columns:1fr;}}
+  .prop-card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .15s,transform .15s;}
+  .prop-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .prop-card .pc-type{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);font-weight:700;}
+  .prop-card .pc-label{font-size:17px;font-weight:800;margin:4px 0 2px;letter-spacing:-.2px;}
+  .prop-card .pc-addr{font-size:13px;color:var(--muted);margin-bottom:14px;min-height:18px;}
+  .prop-card .pc-stats{display:flex;gap:16px;border-top:1px solid var(--hair);padding-top:12px;}
+  .prop-card .pc-stats div{font-size:12px;color:var(--muted);}
+  .prop-card .pc-stats b{display:block;font-size:18px;color:var(--ink);font-weight:800;}
+  .pc-stats b.flag{color:var(--bad);}
+
+  /* tables */
+  .table-scroll{overflow-x:auto;border:1px solid var(--hair);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;padding:12px 10px;border-bottom:2px solid var(--hair);background:#FCFBF8;white-space:nowrap;}
+  tbody td{padding:7px 10px;border-bottom:1px solid var(--hair);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FCFBF8;}
+  td input,td select{width:100%;border:1px solid transparent;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);padding:6px 7px;border-radius:6px;}
+  td input:hover{border-color:var(--hair);}
+  td input:focus,td select:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+  td input[type=date]{min-width:128px;}
+  td input.num{text-align:right;}
+  .col-num{text-align:right;}
+  td.computed{font-weight:700;white-space:nowrap;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .chip.ok{color:var(--ok);background:var(--ok-bg);} .chip.warn{color:#9a6212;background:var(--warn-bg);}
+  .chip.bad{color:var(--bad);background:var(--bad-bg);} .chip.none{color:var(--muted);background:var(--bg);}
+  .row-del{color:var(--muted);border:none;background:transparent;font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;border-radius:6px;}
+  .row-del:hover{color:var(--bad);background:var(--bad-bg);}
+  .empty{padding:44px 24px;text-align:center;color:var(--muted);}
+  .empty p{margin-bottom:10px;font-size:15px;}
+  .linkish{color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  select.filter{border:1px solid var(--hair-strong);background:var(--surface);font-family:inherit;font-size:13px;padding:8px 12px;border-radius:8px;color:var(--ink);font-weight:600;}
+  .totals{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;}
+
+  /* details form */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:760px;}
+  @media(max-width:640px){.form-grid{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;}
+  .field input,.field select,.field textarea{border:1px solid var(--hair-strong);background:#fff;font-family:inherit;font-size:14.5px;padding:10px 12px;border-radius:8px;color:var(--ink);}
+  .field textarea{min-height:120px;resize:vertical;line-height:1.5;}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+  .field .help{font-size:12px;color:var(--muted);}
+
+  /* seasonal */
+  .season{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);}
+  .season-head{width:100%;display:flex;align-items:center;gap:14px;padding:15px 20px;cursor:pointer;background:transparent;border:none;font-family:inherit;text-align:left;}
+  .season-head:hover{background:#FCFBF8;}
+  .season-ico{font-size:19px;}
+  .season-title{font-size:15px;font-weight:800;letter-spacing:-.2px;}
+  .season-when{font-size:12px;color:var(--muted);font-weight:600;}
+  .season-active{font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:#2a1c06;padding:2px 8px;border-radius:20px;font-weight:800;}
+  .season-prog{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .pbar{width:120px;height:8px;background:var(--bg);border:1px solid var(--hair);border-radius:20px;overflow:hidden;}
+  .pbar>span{display:block;height:100%;background:var(--accent);border-radius:20px;}
+  .plabel{font-size:12px;font-weight:700;color:var(--muted);min-width:62px;text-align:right;}
+  .caret{transition:transform .2s;color:var(--muted);font-size:13px;}
+  .season.open .caret{transform:rotate(90deg);}
+  .season-body{display:none;padding:4px 20px 14px;border-top:1px solid var(--hair);}
+  .season.open .season-body{display:block;}
+  .task{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px dashed var(--hair);}
+  .task:last-of-type{border-bottom:none;}
+  .task input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+  .task label{cursor:pointer;flex:1;}
+  .task.done label{text-decoration:line-through;color:var(--muted);}
+  .task .row-del{margin-left:auto;}
+  .add-row{display:flex;gap:8px;margin-top:12px;}
+  .add-row input{flex:1;border:1px solid var(--hair-strong);background:#fff;font-family:inherit;font-size:13.5px;padding:8px 10px;border-radius:8px;color:var(--ink);}
+  .add-row input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+
+  footer.foot{border-top:1px solid var(--hair);padding:26px 0 50px;color:var(--muted);font-size:12.5px;}
+  footer.foot .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hint{font-size:12px;color:var(--muted);}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(22,50,79,.25);}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media print{
+    @page{margin:14mm;}
+    body{background:#fff;font-size:11.5px;}
+    header.top,.toolbar,.switcher,.tabs,.panel-tools,.row-del,.add-row,.btn,#toast{display:none !important;}
+    .panel:not(.active){display:none !important;}
+    .panel.active{display:block !important;padding:8px 0;}
+    .panel-head h2{font-size:16px;border-bottom:2px solid var(--ink);padding-bottom:4px;}
+    .panel-head p{display:none;}
+    .season{box-shadow:none;border:1px solid #999;page-break-inside:avoid;} .season-body{display:block !important;} .caret,.pbar{display:none;}
+    .card,.table-scroll,.stat,.prop-card,.season{box-shadow:none;border:1px solid #999;}
+    table{min-width:0;} td input,td select{border:none;padding:2px;}
+    thead th,tbody tr:hover{background:transparent;} .chip{border:1px solid currentColor;}
+    .wrap{max-width:none;padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark">MP</div>
+      <div>
+        <h1>The Multi-Property Edition</h1>
+        <div class="sub">Every property, one command center</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn ghost" onclick="exportCSV()">⤓ Export CSV</button>
+      <button class="btn ghost" onclick="exportBackup()">⛁ Backup</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()">⤒ Import</button>
+      <button class="btn ghost" onclick="window.print()">⎙ Print</button>
+      <input id="importFile" type="file" accept=".json,application/json" class="visually-hidden" onchange="importBackup(event)">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- PROPERTY SWITCHER -->
+  <nav class="switcher" id="switcher"></nav>
+
+  <!-- PORTFOLIO VIEW -->
+  <div id="portfolioView">
+    <section class="panel active">
+      <div class="panel-head">
+        <div>
+          <h2>Portfolio Dashboard</h2>
+          <p>Everything across every property in one place — what's due in the next 60 days and what each property is costing you.</p>
+        </div>
+      </div>
+      <div class="statrow" id="pfStats"></div>
+      <div class="two-col" style="margin-bottom:22px;">
+        <div class="card due"><h3>◷ Due soon — all properties (next 60 days)</h3><ul class="due-list" id="pfDue"></ul></div>
+        <div class="card"><h3>$ Spend by property — <span id="pfYearLabel">this year</span></h3><div id="pfCost"></div>
+          <div style="margin-top:14px;display:flex;gap:8px;align-items:center;">
+            <label class="hint" for="pfYear">Year</label>
+            <select class="filter" id="pfYear" onchange="renderPortfolio()"></select>
+          </div>
+        </div>
+      </div>
+      <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:12px;">Your properties</h3>
+      <div class="prop-cards" id="pfPropCards"></div>
+    </section>
+  </div>
+
+  <!-- PROPERTY VIEW -->
+  <div id="propertyView" style="display:none;">
+    <nav class="tabs" id="subtabs">
+      <button class="tab active" data-sub="details">🏠 Details</button>
+      <button class="tab" data-sub="systems">⚙ Systems &amp; Appliances <span class="pill" id="cntSystems">0</span></button>
+      <button class="tab" data-sub="seasonal">❖ Seasonal <span class="pill" id="cntSeasonal">0%</span></button>
+      <button class="tab" data-sub="repairs">▤ Repairs &amp; Cost <span class="pill" id="cntRepairs">0</span></button>
+    </nav>
+
+    <!-- DETAILS -->
+    <section class="panel active" id="sub-details">
+      <div class="panel-head"><div><h2>Property Details</h2><p>Name this property, set its type, and keep landlord notes for the unit or tenant here.</p></div></div>
+      <div class="statrow" id="detStats"></div>
+      <div class="form-grid">
+        <div class="field"><label for="dLabel">Property name / label</label><input id="dLabel" type="text" placeholder="e.g. Maple St Duplex" oninput="updProp('label',this.value)"></div>
+        <div class="field"><label for="dType">Type</label><select id="dType" onchange="updProp('type',this.value)"></select></div>
+        <div class="field full"><label for="dAddr">Address</label><input id="dAddr" type="text" placeholder="Street, city, state" oninput="updProp('address',this.value)"></div>
+        <div class="field full"><label for="dNotes">Unit / tenant notes <span style="text-transform:none;font-weight:400;color:var(--muted)">(for landlords — lease dates, tenant contacts, rent, unit specifics)</span></label><textarea id="dNotes" placeholder="e.g. Unit A — tenant Jane D., lease renews 2026-09-01, rent $1,650/mo. Unit B — vacant, turn in progress." oninput="updProp('tenantNotes',this.value)"></textarea></div>
+      </div>
+      <div style="margin-top:26px;"><button class="btn danger sm" onclick="deleteProperty()">🗑 Delete this property</button></div>
+    </section>
+
+    <!-- SYSTEMS -->
+    <section class="panel" id="sub-systems">
+      <div class="panel-head">
+        <div><h2>Systems &amp; Appliances</h2><p>Every system in this property. Set last service + interval and it calculates the next-due date and flags it green / amber / red.</p></div>
+        <div class="panel-tools"><button class="btn accent" onclick="addSystem()">+ Add system</button></div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>System / Appliance</th><th>Location</th><th>Brand / Model</th><th>Installed</th><th>Warranty ends</th><th>Last service</th><th>Every (mo)</th><th>Next due</th><th>Status</th><th></th></tr></thead>
+          <tbody id="bodySystems"></tbody>
+        </table>
+      </div>
+      <p class="hint" style="margin-top:10px;"><span class="chip bad">Overdue</span> past due · <span class="chip warn">Due soon</span> within 30 days · <span class="chip ok">On track</span> beyond. Next-due = last service + interval (falls back to install date).</p>
+    </section>
+
+    <!-- SEASONAL -->
+    <section class="panel" id="sub-seasonal">
+      <div class="panel-head">
+        <div><h2>Seasonal Maintenance</h2><p>The standard quarterly checklist for this property. Work it each season to prevent the expensive failures.</p></div>
+        <div class="panel-tools"><button class="btn sm" onclick="resetSeasonChecks()">↺ Reset checks</button></div>
+      </div>
+      <div id="seasons"></div>
+    </section>
+
+    <!-- REPAIRS -->
+    <section class="panel" id="sub-repairs">
+      <div class="panel-head">
+        <div><h2>Repair &amp; Cost Log</h2><p>Every dollar spent on this property — with a running annual total and year filter. Essential for rental tax deductions.</p></div>
+        <div class="panel-tools">
+          <label class="hint" for="repYear">Year</label>
+          <select class="filter" id="repYear" onchange="renderRepairs()"></select>
+          <button class="btn accent" onclick="addRepair()">+ Add entry</button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Date</th><th>Item / Work done</th><th class="col-num">Cost</th><th>Contractor</th><th>Notes</th><th></th></tr></thead>
+          <tbody id="bodyRepairs"></tbody>
+        </table>
+      </div>
+      <div class="totals">
+        <div class="stat"><div class="k">Total — <span id="repYearLabel">all years</span></div><div class="v" id="repTotal">$0</div></div>
+        <div class="stat"><div class="k">Entries</div><div class="v" id="repEntries">0</div></div>
+        <div class="stat"><div class="k">Lifetime — this property</div><div class="v" id="repLifetime">$0</div></div>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>The Multi-Property Edition — your data is saved automatically in this browser. Nothing is sent anywhere.</span>
+    <span>Back up regularly with <b>Export CSV</b> or <b>Backup</b>.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+var STORAGE_KEY="multi_property_data_v1";
+
+var SEASONS=[
+  {key:"spring",title:"Spring",ico:"🌱",months:[2,3,4]},
+  {key:"summer",title:"Summer",ico:"☀️",months:[5,6,7]},
+  {key:"fall",title:"Fall",ico:"🍂",months:[8,9,10]},
+  {key:"winter",title:"Winter",ico:"❄️",months:[11,0,1]}
+];
+var DEFAULT_TASKS={
+  spring:["Test smoke & CO detectors; replace batteries","Inspect roof for winter damage","Clean gutters and downspouts","Service the A/C unit before summer","Check exterior caulking & weatherstripping","Clean and re-hang window screens","Power-wash siding, deck and walkways","Check outdoor faucets for freeze damage","Fertilize lawn; test irrigation","Inspect foundation; check grading & drainage"],
+  summer:["Replace HVAC air filters","Vacuum refrigerator coils","Clean dryer vent and ducting","Inspect and reseal deck or fence","Test garage door auto-reverse","Deep-clean the outdoor grill","Check attic ventilation and for pests","Touch up exterior paint","Flush water heater; test relief valve","Clean range hood / exhaust filter"],
+  fall:["Service furnace / heating before winter","Clean gutters after leaves fall","Inspect and clean chimney & fireplace","Winterize outdoor faucets & irrigation","Seal gaps; check weatherstripping","Reverse ceiling fan direction","Test the sump pump and backup","Aerate and winterize the lawn","Test detectors; check fire extinguisher","Inspect roof and flashing before snow"],
+  winter:["Replace HVAC air filters","Check for ice dams; clear icicles","Monitor humidity; keep vents clear","Test all GFCI outlets","Inspect basement for leaks","Check attic insulation","Locate and test main water shut-off","Protect exposed pipes from freezing","Vacuum vents and registers","Review inventory; budget next year"]
+};
+var PROP_TYPES=["Primary residence","Rental","Vacation / second home","Inherited / family","Flip / project","Other"];
+var PROP_ICONS={"Primary residence":"🏡","Rental":"🔑","Vacation / second home":"🏖","Inherited / family":"👪","Flip / project":"🔨","Other":"🏠"};
+
+var data=load();
+
+function blankProperty(label,type){
+  var seasonal={};
+  SEASONS.forEach(function(s){ seasonal[s.key]=DEFAULT_TASKS[s.key].map(function(t){return {id:uid(),task:t,done:false};}); });
+  return {id:uid(),label:label||"",address:"",type:type||"Primary residence",tenantNotes:"",systems:[],seasonal:seasonal,repairs:[]};
+}
+function blankData(){ var p=blankProperty("","Primary residence"); return {properties:[p],ui:{view:"property",activeId:p.id,sub:"details"}}; }
+function load(){
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return blankData();
+    var d=JSON.parse(raw);
+    if(!d.properties||!d.properties.length) return blankData();
+    if(!d.ui) d.ui={view:"portfolio",activeId:d.properties[0].id,sub:"details"};
+    d.properties.forEach(function(p){
+      if(!p.systems) p.systems=[];
+      if(!p.repairs) p.repairs=[];
+      if(!p.seasonal){ p.seasonal={}; SEASONS.forEach(function(s){p.seasonal[s.key]=DEFAULT_TASKS[s.key].map(function(t){return{id:uid(),task:t,done:false};});}); }
+      SEASONS.forEach(function(s){ if(!p.seasonal[s.key]) p.seasonal[s.key]=[]; });
+    });
+    return d;
+  }catch(e){ return blankData(); }
+}
+function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){ toast("Could not save — storage may be blocked."); } }
+
+var idSeq=0;
+function uid(){ return "id"+Math.abs(Date.now()^(performance.now()*1000|0)).toString(36)+(idSeq++).toString(36); }
+function esc(v){ return (v==null?"":String(v)); }
+function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
+function num(v){ return Number(v)||0; }
+function fmtMoney(n){ n=num(n); return "$"+n.toLocaleString("en-US",{minimumFractionDigits:(n%1?2:0),maximumFractionDigits:2}); }
+function todayMid(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
+function parseDate(s){ if(!s) return null; var d=new Date(s+"T00:00:00"); return isNaN(d)?null:d; }
+function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+function addMonths(date,n){ var d=new Date(date.getTime()); var day=d.getDate(); d.setDate(1); d.setMonth(d.getMonth()+n); var dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate(); d.setDate(Math.min(day,dim)); return d; }
+function fmtDate(d){ if(!d) return ""; var m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return m[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear(); }
+
+function nextDue(sys){ var i=parseInt(sys.intervalMonths,10); if(!i||i<=0) return null; var b=parseDate(sys.lastService)||parseDate(sys.installDate); if(!b) return null; return addMonths(b,i); }
+function systemStatus(sys){ var nd=nextDue(sys); if(!nd) return {cls:"none",label:"Set dates",days:null,nd:null}; var days=daysBetween(todayMid(),nd); if(days<0) return {cls:"bad",label:"Overdue",days:days,nd:nd}; if(days<=30) return {cls:"warn",label:"Due soon",days:days,nd:nd}; return {cls:"ok",label:"On track",days:days,nd:nd}; }
+function currentSeasonKey(){ var m=todayMid().getMonth(); var f=SEASONS.find(function(s){return s.months.indexOf(m)>=0;}); return f?f.key:"spring"; }
+
+function activeProp(){ return data.properties.find(function(p){return p.id===data.ui.activeId;}) || data.properties[0]; }
+
+/* ===================== RENDER ===================== */
+function render(){
+  renderSwitcher();
+  if(data.ui.view==="portfolio"){
+    document.getElementById("portfolioView").style.display="";
+    document.getElementById("propertyView").style.display="none";
+    renderPortfolio();
+  }else{
+    document.getElementById("portfolioView").style.display="none";
+    document.getElementById("propertyView").style.display="";
+    renderPropertyView();
+  }
+}
+
+function propDueCount(p){
+  var t=todayMid(),c=0;
+  p.systems.forEach(function(s){ var st=systemStatus(s); if(st.nd && st.days<=60) c++; });
+  return c;
+}
+function propWorstStatus(p){
+  var worst="ok",any=false;
+  p.systems.forEach(function(s){ var st=systemStatus(s); if(!st.nd) return; any=true; if(st.cls==="bad") worst="bad"; else if(st.cls==="warn"&&worst!=="bad") worst="warn"; });
+  return any?worst:"none";
+}
+function yearSpend(p,year){ return p.repairs.reduce(function(s,r){ var d=parseDate(r.date); if(year==="all"||(d&&d.getFullYear()===year)) return s+num(r.cost); return s; },0); }
+function lifetimeSpend(p){ return p.repairs.reduce(function(s,r){return s+num(r.cost);},0); }
+
+function renderSwitcher(){
+  var host=document.getElementById("switcher");
+  var html='<button class="pchip portfolio'+(data.ui.view==="portfolio"?" active":"")+'" onclick="goPortfolio()"><span class="ico">📊</span> Portfolio <span class="meta">'+data.properties.length+' '+(data.properties.length===1?"property":"properties")+'</span></button>';
+  data.properties.forEach(function(p){
+    var ws=propWorstStatus(p); var dot=ws==="none"?"":'<span class="dot '+ws+'"></span>';
+    var label=p.label||"(unnamed)";
+    html+='<button class="pchip'+(data.ui.view==="property"&&p.id===data.ui.activeId?" active":"")+'" onclick="goProperty(\''+p.id+'\')"><span class="ico">'+(PROP_ICONS[p.type]||"🏠")+'</span> '+esc(label)+' '+dot+'</button>';
+  });
+  html+='<button class="pchip addprop" onclick="addProperty()">＋ Add property</button>';
+  host.innerHTML=html;
+}
+
+/* ---------- PORTFOLIO ---------- */
+function renderPortfolio(){
+  buildPfYear();
+  var year=pfYearVal();
+  // stats
+  var totalProps=data.properties.length;
+  var totalSystems=data.properties.reduce(function(s,p){return s+p.systems.length;},0);
+  var dueAll=0; data.properties.forEach(function(p){ dueAll+=propDueCount(p); });
+  var spendAll=data.properties.reduce(function(s,p){return s+yearSpend(p,year);},0);
+  document.getElementById("pfStats").innerHTML=
+    statCard("Properties",totalProps,true)
+    +statCard("Systems tracked",totalSystems)
+    +statCard("Due in 60 days",dueAll)
+    +statCard("Spend "+(year==="all"?"(all years)":year),fmtMoney(spendAll));
+  document.getElementById("pfYearLabel").textContent=(year==="all"?"all years":year);
+
+  // due soon across all
+  var due=[];
+  data.properties.forEach(function(p){
+    p.systems.forEach(function(s){ var st=systemStatus(s); if(st.nd && st.days<=60){ due.push({prop:p,name:s.name||"(unnamed system)",days:st.days,cls:st.cls}); } });
+  });
+  due.sort(function(a,b){return a.days-b.days;});
+  var dueEl=document.getElementById("pfDue");
+  if(!due.length){ dueEl.innerHTML='<li class="due-empty">Nothing due in the next 60 days across any property. ✓</li>'; }
+  else{
+    dueEl.innerHTML=due.slice(0,40).map(function(it){
+      var when=it.days<0?(Math.abs(it.days)+"d overdue"):(it.days===0?"today":"in "+it.days+"d");
+      var color=it.cls==="bad"?"var(--bad)":(it.cls==="warn"?"#9a6212":"var(--ok)");
+      return '<li onclick="goProperty(\''+it.prop.id+'\',\'systems\')"><span class="chip '+it.cls+'" style="padding:2px 7px"></span><span>'+esc(it.name)+'</span><span class="tag">'+esc(it.prop.label||"property")+'</span><span class="when" style="color:'+color+'">'+when+'</span></li>';
+    }).join("");
+  }
+
+  // cost by property
+  var costEl=document.getElementById("pfCost");
+  var rows=data.properties.map(function(p){return {k:p.label||"(unnamed)",v:yearSpend(p,year)};}).sort(function(a,b){return b.v-a.v;});
+  if(rows.every(function(r){return r.v===0;})){ costEl.innerHTML='<div class="due-empty">No repair costs logged for this period.</div>'; }
+  else{
+    var max=rows.reduce(function(m,r){return Math.max(m,r.v);},0)||1;
+    costEl.innerHTML=rows.map(function(r){ var pct=Math.round(r.v/max*100); return '<div class="bar-row"><div class="lbl"><span>'+esc(r.k)+'</span><span class="amt">'+fmtMoney(r.v)+'</span></div><div class="bar-track"><span style="width:'+pct+'%"></span></div></div>'; }).join("");
+  }
+
+  // property cards
+  var cardsEl=document.getElementById("pfPropCards");
+  cardsEl.innerHTML=data.properties.map(function(p){
+    var due=propDueCount(p); var spend=yearSpend(p,year);
+    return '<div class="prop-card" onclick="goProperty(\''+p.id+'\')">'
+      +'<div class="pc-type">'+(PROP_ICONS[p.type]||"🏠")+' '+esc(p.type)+'</div>'
+      +'<div class="pc-label">'+esc(p.label||"(unnamed property)")+'</div>'
+      +'<div class="pc-addr">'+esc(p.address||"No address set")+'</div>'
+      +'<div class="pc-stats"><div><b>'+p.systems.length+'</b>systems</div><div><b class="'+(due?"flag":"")+'">'+due+'</b>due soon</div><div><b>'+fmtMoney(spend)+'</b>'+(year==="all"?"all-time":year)+'</div></div>'
+      +'</div>';
+  }).join("");
+}
+function statCard(k,v,lead){ return '<div class="stat'+(lead?" lead":"")+'"><div class="k">'+esc(k)+'</div><div class="v">'+esc(v)+'</div></div>'; }
+function buildPfYear(){
+  var sel=document.getElementById("pfYear"); var prev=sel.value;
+  var years={}; data.properties.forEach(function(p){ p.repairs.forEach(function(r){ var d=parseDate(r.date); if(d) years[d.getFullYear()]=true; }); });
+  var list=Object.keys(years).sort(function(a,b){return b-a;});
+  var cur=new Date().getFullYear();
+  sel.innerHTML='<option value="all">All years</option>'+list.map(function(y){return '<option value="'+y+'">'+y+'</option>';}).join("");
+  if(prev){ sel.value=prev; }
+  else if(years[cur]){ sel.value=String(cur); }
+}
+function pfYearVal(){ var v=document.getElementById("pfYear").value; return v==="all"?"all":parseInt(v,10); }
+
+/* ---------- PROPERTY VIEW ---------- */
+function renderPropertyView(){
+  var p=activeProp();
+  // details inputs
+  document.getElementById("dLabel").value=p.label||"";
+  document.getElementById("dAddr").value=p.address||"";
+  document.getElementById("dNotes").value=p.tenantNotes||"";
+  var typeSel=document.getElementById("dType");
+  typeSel.innerHTML=PROP_TYPES.map(function(t){return '<option'+(p.type===t?" selected":"")+'>'+t+'</option>';}).join("");
+  renderDetStats();
+  renderSystems();
+  renderSeasonal();
+  refreshRepYear();
+  renderRepairs();
+  updateSubCounts();
+  applySubtab();
+}
+function renderDetStats(){
+  var p=activeProp();
+  var due=propDueCount(p); var spend=yearSpend(p,new Date().getFullYear());
+  document.getElementById("detStats").innerHTML=
+    statCard("Systems",p.systems.length,true)
+    +statCard("Due in 60 days",due)
+    +statCard("Spend this year",fmtMoney(spend))
+    +statCard("Lifetime spend",fmtMoney(lifetimeSpend(p)));
+}
+function updateSubCounts(){
+  var p=activeProp();
+  document.getElementById("cntSystems").textContent=p.systems.length;
+  document.getElementById("cntRepairs").textContent=p.repairs.length;
+  var tot=0,done=0; SEASONS.forEach(function(s){ var a=p.seasonal[s.key]||[]; tot+=a.length; done+=a.filter(function(t){return t.done;}).length; });
+  document.getElementById("cntSeasonal").textContent=(tot?Math.round(done/tot*100):0)+"%";
+}
+function applySubtab(){
+  var sub=data.ui.sub||"details";
+  document.querySelectorAll("#subtabs .tab").forEach(function(b){ b.classList.toggle("active",b.getAttribute("data-sub")===sub); });
+  document.querySelectorAll("#propertyView .panel").forEach(function(pn){ pn.classList.toggle("active",pn.id==="sub-"+sub); });
+}
+
+/* property nav */
+function goPortfolio(){ data.ui.view="portfolio"; save(); render(); }
+function goProperty(id,sub){ data.ui.view="property"; data.ui.activeId=id; if(sub) data.ui.sub=sub; save(); render(); }
+document.getElementById("subtabs").addEventListener("click",function(e){ var b=e.target.closest(".tab"); if(!b)return; data.ui.sub=b.getAttribute("data-sub"); save(); applySubtab(); });
+
+function addProperty(){
+  var p=blankProperty("","Primary residence");
+  data.properties.push(p); data.ui.view="property"; data.ui.activeId=p.id; data.ui.sub="details"; save(); render();
+  var el=document.getElementById("dLabel"); if(el) el.focus();
+  toast("Property added — give it a name.");
+}
+function deleteProperty(){
+  var p=activeProp();
+  if(data.properties.length<=1){ alert("This is your only property. Add another before deleting this one."); return; }
+  if(!confirm('Delete "'+(p.label||"this property")+'" and all its systems, seasonal tasks and repair history? This cannot be undone.')) return;
+  data.properties=data.properties.filter(function(x){return x.id!==p.id;});
+  data.ui.view="portfolio"; data.ui.activeId=data.properties[0].id; save(); render();
+  toast("Property deleted.");
+}
+function updProp(key,val){
+  var p=activeProp(); p[key]=val; save();
+  if(key==="label"||key==="type"){ renderSwitcher(); }
+}
+
+/* ---------- SYSTEMS (scoped to active property) ---------- */
+function renderSystems(){
+  var p=activeProp(); var body=document.getElementById("bodySystems"); body.innerHTML="";
+  if(!p.systems.length){
+    body.innerHTML='<tr><td colspan="10"><div class="empty"><p>No systems yet for this property. Add the furnace, water heater, HVAC, roof, sump pump and major appliances.</p>'
+      +'<button class="btn accent" onclick="addSystem()">+ Add system</button> &nbsp; <span class="linkish" onclick="loadExampleSystems()">or load example data</span></div></td></tr>';
+    return;
+  }
+  p.systems.forEach(function(sys){
+    var st=systemStatus(sys); var tr=document.createElement("tr"); tr.id="sysrow_"+sys.id;
+    tr.innerHTML=
+      sCell(sys,"name","text","e.g. Furnace")+sCell(sys,"location","text","e.g. Basement")+sCell(sys,"brand","text","Brand / model")
+      +sCell(sys,"installDate","date","")+sCell(sys,"warrantyExpiry","date","")+sCell(sys,"lastService","date","")
+      +'<td class="col-num"><input class="num" type="number" min="0" step="1" value="'+attr(sys.intervalMonths)+'" placeholder="12" oninput="updSystem(\''+sys.id+'\',\'intervalMonths\',this.value)"></td>'
+      +'<td class="computed">'+(st.nd?fmtDate(st.nd):'<span style="color:var(--muted);font-weight:400">—</span>')+'</td>'
+      +'<td><span class="chip '+st.cls+'">'+st.label+'</span></td>'
+      +'<td><button class="row-del" title="Delete" onclick="delSystem(\''+sys.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+}
+function sCell(sys,key,type,ph){ return '<td><input type="'+type+'" value="'+attr(sys[key])+'" '+(ph?'placeholder="'+attr(ph)+'"':'')+' oninput="updSystem(\''+sys.id+'\',\''+key+'\',this.value)"></td>'; }
+function updSystem(id,key,val){
+  var p=activeProp(); var s=p.systems.find(function(x){return x.id===id;}); if(!s)return; s[key]=val; save();
+  var st=systemStatus(s); var row=document.getElementById("sysrow_"+id);
+  if(row){ row.children[7].innerHTML=st.nd?fmtDate(st.nd):'<span style="color:var(--muted);font-weight:400">—</span>'; row.children[8].innerHTML='<span class="chip '+st.cls+'">'+st.label+'</span>'; }
+}
+function addSystem(){ var p=activeProp(); p.systems.push({id:uid(),name:"",location:"",brand:"",installDate:"",warrantyExpiry:"",lastService:"",intervalMonths:""}); save(); renderSystems(); updateSubCounts(); renderSwitcher(); }
+function delSystem(id){ var p=activeProp(); p.systems=p.systems.filter(function(x){return x.id!==id;}); save(); renderSystems(); updateSubCounts(); renderDetStats(); renderSwitcher(); }
+function loadExampleSystems(){
+  var p=activeProp(); var t=todayMid();
+  function iso(d){ return d.toISOString().slice(0,10); } function back(m){ return iso(addMonths(t,-m)); }
+  p.systems.push(
+    {id:uid(),name:"Furnace",location:"Basement",brand:"Carrier 59TP6",installDate:back(96),warrantyExpiry:back(-24),lastService:back(11),intervalMonths:"12"},
+    {id:uid(),name:"Water heater",location:"Utility closet",brand:"Rheem 50gal",installDate:back(72),warrantyExpiry:back(-12),lastService:back(14),intervalMonths:"12"},
+    {id:uid(),name:"HVAC / A/C",location:"Exterior",brand:"Trane XR14",installDate:back(60),warrantyExpiry:back(0),lastService:back(5),intervalMonths:"6"}
+  );
+  save(); renderSystems(); updateSubCounts(); renderDetStats(); renderSwitcher(); toast("Loaded 3 example systems.");
+}
+
+/* ---------- SEASONAL (scoped) ---------- */
+function renderSeasonal(){
+  var p=activeProp(); var host=document.getElementById("seasons"); host.innerHTML="";
+  var cur=currentSeasonKey();
+  SEASONS.forEach(function(s){
+    var arr=p.seasonal[s.key]||[]; var done=arr.filter(function(t){return t.done;}).length; var pct=arr.length?Math.round(done/arr.length*100):0;
+    var isCur=s.key===cur; var wrap=document.createElement("div"); wrap.className="season"+(isCur?" open":""); wrap.setAttribute("data-season",s.key);
+    var tasksHTML=arr.map(function(t){
+      return '<div class="task'+(t.done?" done":"")+'"><input type="checkbox" '+(t.done?"checked":"")+' id="t_'+t.id+'" onchange="toggleTask(\''+s.key+'\',\''+t.id+'\',this.checked)"><label for="t_'+t.id+'">'+esc(t.task)+'</label><button class="row-del" onclick="delTask(\''+s.key+'\',\''+t.id+'\')">✕</button></div>';
+    }).join("");
+    var names=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    wrap.innerHTML='<button class="season-head" onclick="this.parentElement.classList.toggle(\'open\')"><span class="season-ico">'+s.ico+'</span><span><span class="season-title">'+s.title+'</span> '+(isCur?'<span class="season-active">In season</span>':'')+'<br><span class="season-when">'+s.months.map(function(m){return names[m];}).join(" · ")+'</span></span><span class="season-prog"><span class="pbar"><span style="width:'+pct+'%;background:'+(pct===100?"var(--ok)":"var(--accent)")+'"></span></span><span class="plabel">'+done+'/'+arr.length+' · '+pct+'%</span><span class="caret">▶</span></span></button>'
+      +'<div class="season-body">'+tasksHTML+'<div class="add-row"><input type="text" placeholder="Add a custom task for '+s.title+'…" onkeydown="if(event.key===\'Enter\'){addTask(\''+s.key+'\',this.value);this.value=\'\';}"><button class="btn sm" onclick="var i=this.previousElementSibling;addTask(\''+s.key+'\',i.value);i.value=\'\';">Add</button></div></div>';
+    host.appendChild(wrap);
+  });
+}
+function toggleTask(sk,id,checked){ var p=activeProp(); var t=(p.seasonal[sk]||[]).find(function(x){return x.id===id;}); if(t){t.done=checked;save();} refreshSeasonProgress(sk); updateSubCounts(); }
+function refreshSeasonProgress(sk){
+  var p=activeProp(); var arr=p.seasonal[sk]||[]; var done=arr.filter(function(t){return t.done;}).length; var pct=arr.length?Math.round(done/arr.length*100):0;
+  var wrap=document.querySelector('.season[data-season="'+sk+'"]'); if(!wrap)return;
+  var bar=wrap.querySelector('.pbar>span'); var label=wrap.querySelector('.plabel');
+  if(bar){bar.style.width=pct+"%";bar.style.background=(pct===100?"var(--ok)":"var(--accent)");}
+  if(label){label.textContent=done+"/"+arr.length+" · "+pct+"%";}
+  var rows=wrap.querySelectorAll('.task'); arr.forEach(function(t,i){ if(rows[i]) rows[i].classList.toggle("done",t.done); });
+}
+function addTask(sk,text){ text=(text||"").trim(); if(!text)return; var p=activeProp(); p.seasonal[sk].push({id:uid(),task:text,done:false}); save(); renderSeasonal(); reopenSeason(sk); updateSubCounts(); }
+function delTask(sk,id){ var p=activeProp(); p.seasonal[sk]=p.seasonal[sk].filter(function(x){return x.id!==id;}); save(); renderSeasonal(); reopenSeason(sk); updateSubCounts(); }
+function reopenSeason(sk){ var w=document.querySelector('.season[data-season="'+sk+'"]'); if(w)w.classList.add("open"); }
+function resetSeasonChecks(){ if(!confirm("Uncheck every seasonal task for this property?"))return; var p=activeProp(); SEASONS.forEach(function(s){(p.seasonal[s.key]||[]).forEach(function(t){t.done=false;});}); save(); renderSeasonal(); updateSubCounts(); }
+
+/* ---------- REPAIRS (scoped) ---------- */
+function repairYear(r){ var d=parseDate(r.date); return d?d.getFullYear():null; }
+function refreshRepYear(){
+  var p=activeProp(); var sel=document.getElementById("repYear"); var prev=sel.value;
+  var years={}; p.repairs.forEach(function(r){ var y=repairYear(r); if(y) years[y]=true; });
+  var list=Object.keys(years).sort(function(a,b){return b-a;});
+  sel.innerHTML='<option value="all">All years</option>'+list.map(function(y){return '<option value="'+y+'">'+y+'</option>';}).join("");
+  if(prev&&(prev==="all"||years[prev])) sel.value=prev;
+}
+function addRepair(){ var p=activeProp(); p.repairs.unshift({id:uid(),date:"",item:"",cost:"",contractor:"",notes:""}); save(); refreshRepYear(); renderRepairs(); updateSubCounts(); }
+function delRepair(id){ var p=activeProp(); p.repairs=p.repairs.filter(function(x){return x.id!==id;}); save(); refreshRepYear(); renderRepairs(); updateSubCounts(); renderDetStats(); }
+function updRepair(id,key,val){ var p=activeProp(); var r=p.repairs.find(function(x){return x.id===id;}); if(!r)return; r[key]=val; save(); if(key==="cost"||key==="date"){ renderRepTotals(); if(key==="date") refreshRepYear(); } }
+function renderRepairs(){
+  var p=activeProp(); var body=document.getElementById("bodyRepairs"); var filter=document.getElementById("repYear").value||"all"; body.innerHTML="";
+  if(!p.repairs.length){ body.innerHTML='<tr><td colspan="6"><div class="empty"><p>No repairs logged for this property yet. Track every cost — invaluable for rental deductions and resale.</p><button class="btn accent" onclick="addRepair()">+ Log a repair</button></div></td></tr>'; renderRepTotals(); return; }
+  var rows=p.repairs.filter(function(r){ return filter==="all"||String(repairYear(r))===String(filter); });
+  rows.forEach(function(r){
+    var tr=document.createElement("tr");
+    tr.innerHTML='<td><input type="date" value="'+attr(r.date)+'" onchange="updRepair(\''+r.id+'\',\'date\',this.value)"></td>'
+      +'<td><input type="text" value="'+attr(r.item)+'" placeholder="What was done" oninput="updRepair(\''+r.id+'\',\'item\',this.value)"></td>'
+      +'<td class="col-num"><input class="num" type="number" min="0" step="0.01" value="'+attr(r.cost)+'" placeholder="0.00" oninput="updRepair(\''+r.id+'\',\'cost\',this.value)"></td>'
+      +'<td><input type="text" value="'+attr(r.contractor)+'" placeholder="Who did it" oninput="updRepair(\''+r.id+'\',\'contractor\',this.value)"></td>'
+      +'<td><input type="text" value="'+attr(r.notes)+'" placeholder="Notes" oninput="updRepair(\''+r.id+'\',\'notes\',this.value)"></td>'
+      +'<td><button class="row-del" onclick="delRepair(\''+r.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+  renderRepTotals();
+}
+function renderRepTotals(){
+  var p=activeProp(); var filter=document.getElementById("repYear").value||"all";
+  var rows=p.repairs.filter(function(r){ return filter==="all"||String(repairYear(r))===String(filter); });
+  var total=rows.reduce(function(s,r){return s+num(r.cost);},0);
+  document.getElementById("repTotal").textContent=fmtMoney(total);
+  document.getElementById("repEntries").textContent=rows.length;
+  document.getElementById("repLifetime").textContent=fmtMoney(lifetimeSpend(p));
+  document.getElementById("repYearLabel").textContent=filter==="all"?"all years":filter;
+}
+
+/* ---------- export / import ---------- */
+function csvCell(v){ return '"'+esc(v).replace(/"/g,'""')+'"'; }
+function csvRow(a){ return a.map(csvCell).join(",")+"\r\n"; }
+function exportCSV(){
+  var out="THE MULTI-PROPERTY EDITION — EXPORT\r\n"+csvRow(["Generated",new Date().toString()])+csvRow(["Properties",data.properties.length])+"\r\n";
+  data.properties.forEach(function(p){
+    out+="================================================\r\n";
+    out+=csvRow(["PROPERTY",p.label||"(unnamed)"])+csvRow(["Type",p.type])+csvRow(["Address",p.address]);
+    if(p.tenantNotes) out+=csvRow(["Unit / tenant notes",p.tenantNotes]);
+    out+="\r\n  SYSTEMS & APPLIANCES\r\n"+csvRow(["Name","Location","Brand/Model","Installed","Warranty ends","Last service","Interval (mo)","Next due","Status"]);
+    p.systems.forEach(function(s){ var st=systemStatus(s); out+=csvRow([s.name,s.location,s.brand,s.installDate,s.warrantyExpiry,s.lastService,s.intervalMonths,st.nd?fmtDate(st.nd):"",st.label]); });
+    out+="\r\n  SEASONAL MAINTENANCE\r\n"+csvRow(["Season","Task","Done"]);
+    SEASONS.forEach(function(se){ (p.seasonal[se.key]||[]).forEach(function(t){ out+=csvRow([se.title,t.task,t.done?"yes":"no"]); }); });
+    out+="\r\n  REPAIR & COST LOG\r\n"+csvRow(["Date","Item","Cost","Contractor","Notes"]);
+    p.repairs.forEach(function(r){ out+=csvRow([r.date,r.item,r.cost,r.contractor,r.notes]); });
+    out+=csvRow(["","LIFETIME TOTAL",lifetimeSpend(p),"",""])+"\r\n";
+  });
+  downloadFile("multi-property-"+dateStamp()+".csv",out,"text/csv"); toast("CSV exported (all properties).");
+}
+function exportBackup(){ downloadFile("multi-property-backup-"+dateStamp()+".json",JSON.stringify({app:"multi-property-edition",version:1,exported:new Date().toISOString(),data:data},null,2),"application/json"); toast("Backup saved."); }
+function importBackup(evt){
+  var file=evt.target.files[0]; if(!file)return; var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var parsed=JSON.parse(reader.result); var inc=parsed.data?parsed.data:parsed;
+      if(!inc||!inc.properties||!inc.properties.length) throw new Error("Unrecognised file");
+      if(!confirm("Import this backup? It will REPLACE all current data in this browser.")){ evt.target.value=""; return; }
+      data=inc;
+      if(!data.ui) data.ui={view:"portfolio",activeId:data.properties[0].id,sub:"details"};
+      data.properties.forEach(function(p){ if(!p.id)p.id=uid(); if(!p.systems)p.systems=[]; if(!p.repairs)p.repairs=[]; if(!p.seasonal){p.seasonal={};SEASONS.forEach(function(s){p.seasonal[s.key]=DEFAULT_TASKS[s.key].map(function(t){return{id:uid(),task:t,done:false};});});} SEASONS.forEach(function(s){if(!p.seasonal[s.key])p.seasonal[s.key]=[];}); });
+      save(); render(); toast("Backup imported.");
+    }catch(e){ alert("Could not import that file. Use a Backup (.json) exported from this tool.\n\n("+e.message+")"); }
+    evt.target.value="";
+  };
+  reader.readAsText(file);
+}
+function downloadFile(name,content,mime){ var blob=new Blob([content],{type:mime}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},100); }
+function dateStamp(){ var d=new Date(); function p(n){return(n<10?"0":"")+n;} return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate()); }
+
+var toastTimer;
+function toast(msg){ var el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.classList.remove("show");},2600); }
+
+/* ---------- init ---------- */
+(function init(){
+  data.properties.forEach(function(p){
+    if(!p.id)p.id=uid();
+    p.systems.forEach(function(s){if(!s.id)s.id=uid();});
+    p.repairs.forEach(function(r){if(!r.id)r.id=uid();});
+    SEASONS.forEach(function(se){ (p.seasonal[se.key]||[]).forEach(function(t){if(!t.id)t.id=uid();}); });
+  });
+  if(!data.ui) data.ui={view:"portfolio",activeId:data.properties[0].id,sub:"details"};
+  if(!activeProp()) data.ui.activeId=data.properties[0].id;
+  render();
+})();
+</script>
+</body>
+</html>
