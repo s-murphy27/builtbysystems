@@ -475,8 +475,7 @@ function save(){
 }
 
 /* ---------- helpers ---------- */
-function uid(){ return "id" + Math.abs((Date.now() ^ (performance.now()*1000|0)) ).toString(36) + (idSeq++).toString(36); }
-var idSeq = 0;
+function uid(){ uid._n=(uid._n||0)+1; return "id" + Date.now().toString(36) + "-" + uid._n.toString(36) + Math.floor(Math.random()*1296).toString(36); }
 function esc(v){ return (v==null?"":String(v)); }
 function todayMid(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
 function parseDate(s){ if(!s) return null; var d=new Date(s+"T00:00:00"); return isNaN(d)?null:d; }
@@ -949,10 +948,10 @@ function importBackup(evt){
         documents: incoming.documents||[]
       };
       // ensure __col tags + ids
-      data.systems.forEach(function(s){ s.__col="systems"; if(!s.id) s.id=uid(); });
-      data.repairs.forEach(function(r){ r.__col="repairs"; if(!r.id) r.id=uid(); });
-      data.documents.forEach(function(d){ d.__col="documents"; if(!d.id) d.id=uid(); });
-      SEASONS.forEach(function(se){ (data.seasonal[se.key]||[]).forEach(function(t){ if(!t.id) t.id=uid(); }); });
+      data.systems.forEach(function(s){ s.__col="systems"; s.id=uid(); });
+      data.repairs.forEach(function(r){ r.__col="repairs"; r.id=uid(); });
+      data.documents.forEach(function(d){ d.__col="documents"; d.id=uid(); });
+      SEASONS.forEach(function(se){ (data.seasonal[se.key]||[]).forEach(function(t){ t.id=uid(); }); });
       save(); refreshYearFilter(); renderAll();
       toast("Backup imported successfully.");
     }catch(e){
@@ -985,9 +984,10 @@ function toast(msg){
    INIT — tag collections so generic upd() works, then render
    ==================================================================== */
 (function init(){
-  data.systems.forEach(function(s){ s.__col="systems"; if(!s.id) s.id=uid(); });
-  data.repairs.forEach(function(r){ r.__col="repairs"; if(!r.id) r.id=uid(); });
-  data.documents.forEach(function(d){ d.__col="documents"; if(!d.id) d.id=uid(); });
+  data.systems.forEach(function(s){ s.__col="systems"; s.id=uid(); });
+  data.repairs.forEach(function(r){ r.__col="repairs"; r.id=uid(); });
+  data.documents.forEach(function(d){ d.__col="documents"; d.id=uid(); });
+  SEASONS.forEach(function(se){ (data.seasonal[se.key]||[]).forEach(function(t){ t.id=uid(); }); });
   refreshYearFilter();
   renderAll();
   var saved=null; try{ saved=localStorage.getItem(ACTIVE_TAB_KEY); }catch(e){}

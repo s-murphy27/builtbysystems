@@ -344,8 +344,7 @@ function load(){
 }
 function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){ toast("Could not save — storage may be blocked."); } }
 
-var idSeq=0;
-function uid(){ return "id"+Math.abs(Date.now()^(performance.now()*1000|0)).toString(36)+(idSeq++).toString(36); }
+function uid(){ uid._n=(uid._n||0)+1; return "id"+Date.now().toString(36)+"-"+uid._n.toString(36)+Math.floor(Math.random()*1296).toString(36); }
 function esc(v){ return (v==null?"":String(v)); }
 function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
 function todayMid(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
@@ -530,10 +529,10 @@ function importBackup(evt){
         months:inc.months||buildMonths(typeof inc.moveInMonth==="number"?inc.moveInMonth:new Date().getMonth()),
         inventory:inc.inventory||[]
       };
-      data.week1.forEach(function(t){ if(!t.id)t.id=uid(); });
-      data.docs.forEach(function(t){ if(!t.id)t.id=uid(); });
-      data.inventory.forEach(function(it){ if(!it.id)it.id=uid(); });
-      data.months.forEach(function(m){ m.tasks.forEach(function(t){ if(!t.id)t.id=uid(); }); });
+      data.week1.forEach(function(t){ t.id=uid(); });
+      data.docs.forEach(function(t){ t.id=uid(); });
+      data.inventory.forEach(function(it){ it.id=uid(); });
+      data.months.forEach(function(m){ m.tasks.forEach(function(t){ t.id=uid(); }); });
       save(); buildMoveInSelect(); renderAll(); toast("Backup imported.");
     }catch(e){ alert("Could not import that file. Use a Backup (.json) exported from this tool.\n\n("+e.message+")"); }
     evt.target.value="";
@@ -557,10 +556,10 @@ function buildMoveInSelect(){
 
 /* ---------- init ---------- */
 (function init(){
-  data.week1.forEach(function(t){ if(!t.id)t.id=uid(); });
-  data.docs.forEach(function(t){ if(!t.id)t.id=uid(); });
-  data.inventory.forEach(function(it){ if(!it.id)it.id=uid(); });
-  data.months.forEach(function(m){ m.tasks.forEach(function(t){ if(!t.id)t.id=uid(); }); });
+  data.week1.forEach(function(t){ t.id=uid(); });
+  data.docs.forEach(function(t){ t.id=uid(); });
+  data.inventory.forEach(function(it){ it.id=uid(); });
+  data.months.forEach(function(m){ m.tasks.forEach(function(t){ t.id=uid(); }); });
   buildMoveInSelect();
   renderAll();
   var saved=null; try{ saved=localStorage.getItem(ACTIVE_TAB_KEY); }catch(e){}

@@ -366,8 +366,7 @@ function load(){
 }
 function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){ toast("Could not save — storage may be blocked."); } }
 
-var idSeq=0;
-function uid(){ return "id"+Math.abs(Date.now()^(performance.now()*1000|0)).toString(36)+(idSeq++).toString(36); }
+function uid(){ uid._n=(uid._n||0)+1; return "id"+Date.now().toString(36)+"-"+uid._n.toString(36)+Math.floor(Math.random()*1296).toString(36); }
 function esc(v){ return (v==null?"":String(v)); }
 function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
 function num(v){ return Number(v)||0; }
@@ -687,7 +686,7 @@ function importBackup(evt){
       if(!confirm("Import this backup? It will REPLACE all current data in this browser.")){ evt.target.value=""; return; }
       data=inc;
       if(!data.ui) data.ui={view:"portfolio",activeId:data.properties[0].id,sub:"details"};
-      data.properties.forEach(function(p){ if(!p.id)p.id=uid(); if(!p.systems)p.systems=[]; if(!p.repairs)p.repairs=[]; if(!p.seasonal){p.seasonal={};SEASONS.forEach(function(s){p.seasonal[s.key]=DEFAULT_TASKS[s.key].map(function(t){return{id:uid(),task:t,done:false};});});} SEASONS.forEach(function(s){if(!p.seasonal[s.key])p.seasonal[s.key]=[];}); });
+      data.properties.forEach(function(p){ if(!p.id)p.id=uid(); if(!p.systems)p.systems=[]; if(!p.repairs)p.repairs=[]; if(!p.seasonal){p.seasonal={};SEASONS.forEach(function(s){p.seasonal[s.key]=DEFAULT_TASKS[s.key].map(function(t){return{id:uid(),task:t,done:false};});});} SEASONS.forEach(function(s){if(!p.seasonal[s.key])p.seasonal[s.key]=[];}); p.systems.forEach(function(s){s.id=uid();}); p.repairs.forEach(function(r){r.id=uid();}); SEASONS.forEach(function(s){p.seasonal[s.key].forEach(function(t){t.id=uid();});}); });
       save(); render(); toast("Backup imported.");
     }catch(e){ alert("Could not import that file. Use a Backup (.json) exported from this tool.\n\n("+e.message+")"); }
     evt.target.value="";
@@ -702,14 +701,16 @@ function toast(msg){ var el=document.getElementById("toast"); el.textContent=msg
 
 /* ---------- init ---------- */
 (function init(){
+  var __ai=0;
+  if(data.ui){ for(var __i=0;__i<data.properties.length;__i++){ if(data.properties[__i].id===data.ui.activeId) __ai=__i; } }
   data.properties.forEach(function(p){
-    if(!p.id)p.id=uid();
-    p.systems.forEach(function(s){if(!s.id)s.id=uid();});
-    p.repairs.forEach(function(r){if(!r.id)r.id=uid();});
-    SEASONS.forEach(function(se){ (p.seasonal[se.key]||[]).forEach(function(t){if(!t.id)t.id=uid();}); });
+    p.id=uid();
+    p.systems.forEach(function(s){ s.id=uid(); });
+    p.repairs.forEach(function(r){ r.id=uid(); });
+    SEASONS.forEach(function(se){ (p.seasonal[se.key]||[]).forEach(function(t){ t.id=uid(); }); });
   });
   if(!data.ui) data.ui={view:"portfolio",activeId:data.properties[0].id,sub:"details"};
-  if(!activeProp()) data.ui.activeId=data.properties[0].id;
+  data.ui.activeId=data.properties[__ai].id;
   render();
 })();
 </script>

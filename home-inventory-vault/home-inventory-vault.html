@@ -266,8 +266,7 @@ function load(){
 }
 function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){ toast("Could not save — storage may be blocked."); } }
 
-var idSeq=0;
-function uid(){ return "id"+Math.abs(Date.now()^(performance.now()*1000|0)).toString(36)+(idSeq++).toString(36); }
+function uid(){ uid._n=(uid._n||0)+1; return "id"+Date.now().toString(36)+"-"+uid._n.toString(36)+Math.floor(Math.random()*1296).toString(36); }
 function esc(v){ return (v==null?"":String(v)); }
 function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
 function num(v){ return Number(v)||0; }
@@ -484,7 +483,7 @@ function importBackup(evt){
       if(!inc||!inc.items) throw new Error("Unrecognised file");
       if(!confirm("Import this backup? It will REPLACE all current data in this browser.")){ evt.target.value=""; return; }
       data={ items:inc.items||[], meta:inc.meta||{ownerName:"",policyNumber:"",propAddr:""} };
-      data.items.forEach(function(it){ if(!it.id) it.id=uid(); });
+      data.items.forEach(function(it){ it.id=uid(); });
       save(); renderAll(); toast("Backup imported.");
     }catch(e){ alert("Could not import that file. Use a Backup (.json) exported from this tool.\n\n("+e.message+")"); }
     evt.target.value="";
@@ -503,7 +502,7 @@ function toast(msg){ var el=document.getElementById("toast"); el.textContent=msg
 
 /* ---------- init ---------- */
 (function init(){
-  data.items.forEach(function(it){ if(!it.id) it.id=uid(); });
+  data.items.forEach(function(it){ it.id=uid(); });
   renderAll();
   var saved=null; try{ saved=localStorage.getItem(ACTIVE_TAB_KEY); }catch(e){}
   if(saved) switchTab(saved);
