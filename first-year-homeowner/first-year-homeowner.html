@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The First-Year Homeowner Kit</title>
+<style>
+  :root{
+    --bg:#F8F6F1; --surface:#FFFFFF; --ink:#16324F; --accent:#E0922F;
+    --muted:#5A6B75; --hair:#E2DED4; --hair-strong:#CBD3D8;
+    --ok:#2F8F5B; --ok-bg:#E7F2EC; --warn:#E0922F; --warn-bg:#FBEFDD;
+    --bad:#C0492F; --bad-bg:#F7E4DF;
+    --shadow:0 1px 2px rgba(22,50,79,.05);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  header.top{background:var(--ink);color:#fff;border-bottom:3px solid var(--accent);}
+  .top-inner{max-width:1100px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand .mark{width:40px;height:40px;border:2px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-weight:800;font-size:16px;color:var(--accent);letter-spacing:.5px;}
+  .brand h1{font-size:20px;font-weight:800;letter-spacing:-.2px;line-height:1.1;}
+  .brand .sub{font-size:12px;color:#A9C0D4;letter-spacing:.04em;text-transform:uppercase;margin-top:3px;}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{appearance:none;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:transform .04s ease,box-shadow .15s ease,background .15s;line-height:1;}
+  .btn:hover{box-shadow:var(--shadow);}
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:transparent;border-color:rgba(255,255,255,.3);color:#fff;}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#2a1c06;}
+  .btn.accent:hover{filter:brightness(1.04);}
+  .btn.sm{padding:6px 10px;font-size:12px;}
+
+  /* progress banner */
+  .progbanner{margin:22px 0 6px;background:var(--surface);border:1px solid var(--hair);border-left:4px solid var(--accent);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+  .progbanner .txt h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:3px;}
+  .progbanner .txt .lead{font-size:18px;font-weight:700;letter-spacing:-.2px;}
+  .progbanner .txt .lead b{color:var(--accent);}
+  .progbanner .bar{flex:1;min-width:220px;height:12px;background:var(--bg);border:1px solid var(--hair);border-radius:20px;overflow:hidden;}
+  .progbanner .bar>span{display:block;height:100%;background:var(--accent);border-radius:20px;transition:width .3s ease;}
+  .progbanner .moveins{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
+  .progbanner select{border:1px solid var(--hair-strong);background:var(--surface);font-family:inherit;font-size:13px;padding:7px 10px;border-radius:8px;color:var(--ink);font-weight:600;}
+
+  .tabs{display:flex;gap:4px;margin:22px 0 0;border-bottom:2px solid var(--hair);flex-wrap:wrap;}
+  .tab{appearance:none;border:none;background:transparent;font-family:inherit;cursor:pointer;padding:12px 18px;font-size:14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:8px;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--ink);border-bottom-color:var(--accent);}
+  .tab .pill{background:var(--bg);border:1px solid var(--hair);border-radius:20px;font-size:11px;padding:1px 8px;font-weight:700;color:var(--muted);}
+
+  .panel{display:none;padding:26px 0 60px;}
+  .panel.active{display:block;}
+  .panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .panel-head h2{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+  .panel-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:64ch;}
+  .panel-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+  /* checklist card */
+  .checkcard{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);box-shadow:var(--shadow);padding:8px 20px 16px;}
+  .task{display:flex;align-items:center;gap:13px;padding:11px 4px;border-bottom:1px dashed var(--hair);}
+  .task:last-of-type{border-bottom:none;}
+  .task input[type=checkbox]{width:19px;height:19px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+  .task label{cursor:pointer;flex:1;font-size:15px;}
+  .task.done label{text-decoration:line-through;color:var(--muted);}
+  .task .row-del{margin-left:auto;}
+  .row-del{color:var(--muted);border:none;background:transparent;font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;border-radius:6px;}
+  .row-del:hover{color:var(--bad);background:var(--bad-bg);}
+  .add-row{display:flex;gap:8px;margin-top:14px;}
+  .add-row input{flex:1;border:1px solid var(--hair-strong);background:#fff;font-family:inherit;font-size:14px;padding:9px 11px;border-radius:8px;color:var(--ink);}
+  .add-row input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+
+  /* month panels */
+  .month{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);}
+  .month-head{width:100%;display:flex;align-items:center;gap:14px;padding:15px 20px;cursor:pointer;background:transparent;border:none;font-family:inherit;text-align:left;}
+  .month-head:hover{background:#FCFBF8;}
+  .month-badge{width:34px;height:34px;border-radius:8px;background:var(--bg);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--ink);flex:0 0 auto;}
+  .month-title{font-size:15px;font-weight:800;letter-spacing:-.2px;}
+  .month-when{font-size:12px;color:var(--muted);font-weight:600;}
+  .month-active{font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:#2a1c06;padding:2px 8px;border-radius:20px;font-weight:800;}
+  .month-prog{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .pbar{width:120px;height:8px;background:var(--bg);border:1px solid var(--hair);border-radius:20px;overflow:hidden;}
+  .pbar>span{display:block;height:100%;background:var(--accent);border-radius:20px;transition:width .25s;}
+  .plabel{font-size:12px;font-weight:700;color:var(--muted);min-width:62px;text-align:right;}
+  .caret{transition:transform .2s;color:var(--muted);font-size:13px;}
+  .month.open .caret{transform:rotate(90deg);}
+  .month-body{display:none;padding:4px 20px 14px;border-top:1px solid var(--hair);}
+  .month.open .month-body{display:block;}
+
+  /* table (inventory) */
+  .table-scroll{overflow-x:auto;border:1px solid var(--hair);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:620px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;padding:12px;border-bottom:2px solid var(--hair);background:#FCFBF8;white-space:nowrap;}
+  tbody td{padding:7px 10px;border-bottom:1px solid var(--hair);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FCFBF8;}
+  td input{width:100%;border:1px solid transparent;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);padding:6px 7px;border-radius:6px;}
+  td input:hover{border-color:var(--hair);}
+  td input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+  td input[type=date]{min-width:130px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .chip.ok{color:var(--ok);background:var(--ok-bg);}
+  .chip.warn{color:#9a6212;background:var(--warn-bg);}
+  .chip.bad{color:var(--bad);background:var(--bad-bg);}
+  .chip.none{color:var(--muted);background:var(--bg);}
+
+  .empty{padding:40px 24px;text-align:center;color:var(--muted);}
+  .empty p{margin-bottom:10px;font-size:15px;}
+
+  footer.foot{border-top:1px solid var(--hair);padding:26px 0 50px;color:var(--muted);font-size:12.5px;}
+  footer.foot .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hint{font-size:12px;color:var(--muted);}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(22,50,79,.25);}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media print{
+    @page{margin:16mm;}
+    body{background:#fff;font-size:11.5px;}
+    header.top{background:#fff;color:var(--ink);border-bottom:2px solid var(--ink);}
+    .brand .mark{border-color:var(--ink);color:var(--ink);} .brand .sub{color:var(--muted);}
+    .toolbar,.tabs,.row-del,.add-row,.btn,#toast,.progbanner .moveins{display:none !important;}
+    .panel{display:block !important;padding:14px 0;}
+    .panel-head h2{font-size:16px;border-bottom:2px solid var(--ink);padding-bottom:4px;}
+    .month{box-shadow:none;border:1px solid #999;page-break-inside:avoid;}
+    .month-body{display:block !important;} .caret,.pbar,.progbanner .bar{display:none;}
+    .checkcard,.table-scroll,.progbanner{box-shadow:none;border:1px solid #999;}
+    table{min-width:0;} td input{border:none;padding:2px;}
+    thead th,tbody tr:hover{background:transparent;} .chip{border:1px solid currentColor;}
+    .wrap{max-width:none;padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark">FY</div>
+      <div>
+        <h1>The First-Year Homeowner Kit</h1>
+        <div class="sub">Your first 12 months, handled</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn ghost" onclick="exportCSV()">⤓ Export CSV</button>
+      <button class="btn ghost" onclick="exportBackup()">⛁ Backup</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()">⤒ Import</button>
+      <button class="btn ghost" onclick="window.print()">⎙ Print</button>
+      <input id="importFile" type="file" accept=".json,application/json" class="visually-hidden" onchange="importBackup(event)">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="progbanner">
+    <div class="txt">
+      <h2>Your first-year progress</h2>
+      <div class="lead"><b id="progPct">0%</b> complete · <span id="progCount">0 of 0</span> tasks done</div>
+    </div>
+    <div class="bar"><span id="progFill" style="width:0%"></span></div>
+    <div class="moveins">
+      <label for="moveInSel">Moved in:</label>
+      <select id="moveInSel" onchange="changeMoveIn(this.value)"></select>
+    </div>
+  </section>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="week1">🔑 Week 1 Move-In <span class="pill" id="cntWeek1">0</span></button>
+    <button class="tab" data-tab="calendar">📅 12-Month Calendar <span class="pill" id="cntCal">0%</span></button>
+    <button class="tab" data-tab="inventory">📦 Home Inventory <span class="pill" id="cntInv">0</span></button>
+    <button class="tab" data-tab="docs">🗂 Documents <span class="pill" id="cntDocs">0</span></button>
+  </nav>
+
+  <!-- WEEK 1 -->
+  <section class="panel active" id="panel-week1">
+    <div class="panel-head">
+      <div>
+        <h2>Week 1 Move-In Checklist</h2>
+        <p>Before you unpack the kitchen, do these. The critical safety and control tasks every new owner needs in the first seven days.</p>
+      </div>
+      <div class="panel-tools"><button class="btn sm" onclick="resetList('week1')">↺ Reset</button></div>
+    </div>
+    <div class="checkcard" id="listWeek1"></div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="panel" id="panel-calendar">
+    <div class="panel-head">
+      <div>
+        <h2>Month-by-Month Maintenance Calendar</h2>
+        <p>Twelve months of the right tasks for your home, in order from your move-in date — first-year milestones plus the seasonal jobs for each calendar month. Check them off as you go.</p>
+      </div>
+      <div class="panel-tools"><button class="btn sm" onclick="resetCalendar()">↺ Reset checks</button></div>
+    </div>
+    <div id="months"></div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section class="panel" id="panel-inventory">
+    <div class="panel-head">
+      <div>
+        <h2>Starter Home Inventory</h2>
+        <p>A light record of your major systems and appliances — name, location and warranty date. Enough to know what you've got and when the warranties run out. (Upgrade to the full Home Operations System when you're ready to track service schedules.)</p>
+      </div>
+      <div class="panel-tools"><button class="btn accent" onclick="addInv()">+ Add item</button></div>
+    </div>
+    <div class="table-scroll">
+      <table id="tblInv">
+        <thead><tr><th>System / Appliance</th><th>Location</th><th>Warranty ends</th><th>Status</th><th></th></tr></thead>
+        <tbody id="bodyInv"></tbody>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:10px;">Status: <span class="chip bad">Expired</span> past · <span class="chip warn">Expires soon</span> within 60 days · <span class="chip ok">Active</span> covered.</p>
+  </section>
+
+  <!-- DOCS -->
+  <section class="panel" id="panel-docs">
+    <div class="panel-head">
+      <div>
+        <h2>Move-In Document Checklist</h2>
+        <p>The paperwork to gather and file in your first weeks — closing documents, warranties, insurance and utility accounts. Check each off once it's saved somewhere you can find it.</p>
+      </div>
+      <div class="panel-tools"><button class="btn sm" onclick="resetList('docs')">↺ Reset</button></div>
+    </div>
+    <div class="checkcard" id="listDocs"></div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>The First-Year Homeowner Kit — your data is saved automatically in this browser. Nothing is sent anywhere.</span>
+    <span>Back up regularly with <b>Export CSV</b> or <b>Backup</b>.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+var STORAGE_KEY="first_year_data_v1";
+var ACTIVE_TAB_KEY="first_year_tab_v1";
+var MONTH_NAMES=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MONTH_ABBR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+var WEEK1_TASKS=[
+  "Locate and label the main water shut-off valve",
+  "Find the electrical breaker panel; map and label the circuits",
+  "Locate the gas shut-off valve (if you have gas)",
+  "Re-key or replace all exterior door locks",
+  "Change garage door and any gate / keypad codes",
+  "Test every smoke and carbon-monoxide detector; replace batteries",
+  "Find the HVAC filter; note its size and replace it",
+  "Locate the water heater; note brand, model and age",
+  "Find the sewer cleanout or septic access point",
+  "Switch all utilities into your name (power, gas, water, internet, trash)",
+  "Do a full walkthrough and photograph any existing damage",
+  "Cut a spare key and store it somewhere safe off-site"
+];
+
+var DOC_TASKS=[
+  "Closing disclosure / settlement statement",
+  "Deed and title documents",
+  "Homeowner's insurance policy + agent contact",
+  "Mortgage / loan paperwork",
+  "Home inspection report",
+  "Seller's disclosure statement",
+  "Appliance manuals and warranty cards",
+  "Service records handed over by the seller",
+  "Property survey / plat map",
+  "Permits and certificate of occupancy",
+  "Utility account numbers and confirmations",
+  "Warranties for roof, windows and major systems"
+];
+
+// first-year milestone tasks keyed by ordinal month (1-12)
+var MILESTONES={
+  1:["Walk the whole house and learn where everything is","Write down every appliance make, model and serial number","Start your home maintenance habit — pick a monthly check day"],
+  2:["Re-test all detectors and confirm they're interconnected","Deep-clean and label the breaker panel circuits"],
+  3:["First quarterly HVAC filter change","Walk the exterior — note any settling, cracks or drainage issues"],
+  4:["Confirm your insurance contents coverage matches reality"],
+  6:["Mid-year systems check — anything noisy, leaking or slow?","Review the first 6 months of spending on the house"],
+  9:["Get ahead of the next season (heating or cooling prep)"],
+  11:["Plan and price any year-one projects you've been putting off"],
+  12:["One-year review — what major service or replacement is coming?","Budget next year's maintenance (~1% of the home's value)"]
+};
+
+// calendar-month maintenance tasks (0=Jan .. 11=Dec)
+var MONTH_TASKS=[
+  ["Replace the HVAC filter","Check for drafts and ice dams","Test all GFCI outlets","Confirm you know the main water shut-off"],            // Jan
+  ["Replace the HVAC filter","Inspect basement / crawlspace for moisture","Check attic insulation","Clean the range hood filter"],          // Feb
+  ["Test detectors; replace batteries","Inspect the roof after winter","Clean gutters and downspouts","Schedule A/C service before summer"], // Mar
+  ["Check exterior caulking and weatherstripping","Clean and re-hang window screens","Test irrigation / sprinklers","Power-wash siding & deck"],// Apr
+  ["Service the A/C unit","Check outdoor faucets for freeze damage","Inspect deck and fence","Fertilize the lawn"],                          // May
+  ["Replace the HVAC filter","Vacuum the refrigerator coils","Clean the dryer vent","Test the garage door auto-reverse"],                   // Jun
+  ["Flush the water heater","Touch up exterior paint","Deep-clean and inspect the grill","Check attic ventilation"],                        // Jul
+  ["Replace the HVAC filter","Inspect plumbing for leaks","Reseal deck or fence if needed","Clean window wells"],                           // Aug
+  ["Service the furnace before winter","Clean gutters again","Inspect chimney and fireplace","Test the sump pump"],                         // Sep
+  ["Winterize outdoor faucets and irrigation","Seal gaps and weatherstripping","Reverse ceiling fan direction","Aerate & winterize lawn"], // Oct
+  ["Replace the HVAC filter","Test detectors","Check fire-extinguisher dates","Inspect the roof before snow"],                              // Nov
+  ["Monitor indoor humidity","Protect exposed pipes from freezing","Vacuum vents and registers","Review your home inventory & warranties"]  // Dec
+];
+
+var data=load();
+
+function blankData(mi){
+  var months=buildMonths(mi);
+  return {
+    moveInMonth:mi,
+    week1:WEEK1_TASKS.map(function(t){return {id:uid(),task:t,done:false};}),
+    docs:DOC_TASKS.map(function(t){return {id:uid(),task:t,done:false};}),
+    months:months,
+    inventory:[]
+  };
+}
+function buildMonths(mi){
+  var out=[];
+  for(var i=1;i<=12;i++){
+    var cal=(mi+i-1)%12;
+    var tasks=[];
+    (MILESTONES[i]||[]).forEach(function(t){ tasks.push({id:uid(),task:t,done:false,milestone:true}); });
+    (MONTH_TASKS[cal]||[]).forEach(function(t){ tasks.push({id:uid(),task:t,done:false,milestone:false}); });
+    out.push({ordinal:i,cal:cal,tasks:tasks});
+  }
+  return out;
+}
+function load(){
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw){ return blankData(new Date().getMonth()); }
+    var d=JSON.parse(raw);
+    if(typeof d.moveInMonth!=="number") d.moveInMonth=new Date().getMonth();
+    if(!d.week1) d.week1=blankData(d.moveInMonth).week1;
+    if(!d.docs) d.docs=blankData(d.moveInMonth).docs;
+    if(!d.months) d.months=buildMonths(d.moveInMonth);
+    if(!d.inventory) d.inventory=[];
+    return d;
+  }catch(e){ return blankData(new Date().getMonth()); }
+}
+function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){ toast("Could not save — storage may be blocked."); } }
+
+var idSeq=0;
+function uid(){ return "id"+Math.abs(Date.now()^(performance.now()*1000|0)).toString(36)+(idSeq++).toString(36); }
+function esc(v){ return (v==null?"":String(v)); }
+function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
+function todayMid(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
+function parseDate(s){ if(!s) return null; var d=new Date(s+"T00:00:00"); return isNaN(d)?null:d; }
+function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+function fmtDate(d){ if(!d) return ""; return MONTH_ABBR[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear(); }
+
+/* ---------- render ---------- */
+function renderAll(){ renderList("week1","listWeek1"); renderList("docs","listDocs"); renderMonths(); renderInv(); renderProgress(); updateCounts(); }
+
+function updateCounts(){
+  document.getElementById("cntWeek1").textContent=data.week1.filter(function(t){return t.done;}).length+"/"+data.week1.length;
+  document.getElementById("cntDocs").textContent=data.docs.filter(function(t){return t.done;}).length+"/"+data.docs.length;
+  document.getElementById("cntInv").textContent=data.inventory.length;
+  var tot=0,done=0; data.months.forEach(function(m){ tot+=m.tasks.length; done+=m.tasks.filter(function(t){return t.done;}).length; });
+  document.getElementById("cntCal").textContent=(tot?Math.round(done/tot*100):0)+"%";
+}
+
+function renderProgress(){
+  var tot=0,done=0;
+  [data.week1,data.docs].forEach(function(a){ tot+=a.length; done+=a.filter(function(t){return t.done;}).length; });
+  data.months.forEach(function(m){ tot+=m.tasks.length; done+=m.tasks.filter(function(t){return t.done;}).length; });
+  var pct=tot?Math.round(done/tot*100):0;
+  document.getElementById("progPct").textContent=pct+"%";
+  document.getElementById("progCount").textContent=done+" of "+tot;
+  document.getElementById("progFill").style.width=pct+"%";
+}
+
+function renderList(key,hostId){
+  var host=document.getElementById(hostId);
+  var arr=data[key];
+  host.innerHTML = arr.map(function(t){
+    return '<div class="task'+(t.done?" done":"")+'">'
+      +'<input type="checkbox" '+(t.done?"checked":"")+' id="c_'+t.id+'" onchange="toggleListItem(\''+key+'\',\''+t.id+'\',this.checked)">'
+      +'<label for="c_'+t.id+'">'+esc(t.task)+'</label>'
+      +'<button class="row-del" title="Delete" onclick="delListItem(\''+key+'\',\''+t.id+'\')">✕</button>'
+      +'</div>';
+  }).join("")
+  + '<div class="add-row"><input type="text" placeholder="Add your own task…" onkeydown="if(event.key===\'Enter\'){addListItem(\''+key+'\',this.value);this.value=\'\';}">'
+  + '<button class="btn sm" onclick="var i=this.previousElementSibling;addListItem(\''+key+'\',i.value);i.value=\'\';">Add</button></div>';
+}
+function toggleListItem(key,id,checked){ var t=data[key].find(function(x){return x.id===id;}); if(t){t.done=checked;save();} renderList(key, key==="week1"?"listWeek1":"listDocs"); renderProgress(); updateCounts(); }
+function addListItem(key,text){ text=(text||"").trim(); if(!text) return; data[key].push({id:uid(),task:text,done:false}); save(); renderList(key, key==="week1"?"listWeek1":"listDocs"); renderProgress(); updateCounts(); }
+function delListItem(key,id){ data[key]=data[key].filter(function(x){return x.id!==id;}); save(); renderList(key, key==="week1"?"listWeek1":"listDocs"); renderProgress(); updateCounts(); }
+function resetList(key){ if(!confirm("Uncheck every item in this list?")) return; data[key].forEach(function(t){t.done=false;}); save(); renderList(key, key==="week1"?"listWeek1":"listDocs"); renderProgress(); updateCounts(); }
+
+function renderMonths(){
+  var host=document.getElementById("months"); host.innerHTML="";
+  var curCal=todayMid().getMonth();
+  data.months.forEach(function(m){
+    var done=m.tasks.filter(function(t){return t.done;}).length;
+    var pct=m.tasks.length?Math.round(done/m.tasks.length*100):0;
+    var isCur=m.cal===curCal;
+    var year2=Math.floor((data.moveInMonth+m.ordinal-1)/12); // 0 or 1
+    var wrap=document.createElement("div");
+    wrap.className="month"+(m.ordinal===1?" open":"");
+    wrap.setAttribute("data-ord",m.ordinal);
+    var tasksHTML=m.tasks.map(function(t){
+      return '<div class="task'+(t.done?" done":"")+'">'
+        +'<input type="checkbox" '+(t.done?"checked":"")+' id="m_'+t.id+'" onchange="toggleMonthTask('+m.ordinal+',\''+t.id+'\',this.checked)">'
+        +'<label for="m_'+t.id+'">'+esc(t.task)+(t.milestone?' <span style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.03em">★ MILESTONE</span>':'')+'</label>'
+        +'<button class="row-del" title="Delete" onclick="delMonthTask('+m.ordinal+',\''+t.id+'\')">✕</button>'
+        +'</div>';
+    }).join("");
+    wrap.innerHTML=
+      '<button class="month-head" onclick="this.parentElement.classList.toggle(\'open\')">'
+        +'<span class="month-badge">'+m.ordinal+'</span>'
+        +'<span><span class="month-title">Month '+m.ordinal+' — '+MONTH_NAMES[m.cal]+(year2?' ’yr2':'')+'</span> '
+        +(isCur?'<span class="month-active">This month</span>':'')+'<br><span class="month-when">'+MONTH_TASKS[m.cal].length+' seasonal · '+((MILESTONES[m.ordinal]||[]).length)+' milestone</span></span>'
+        +'<span class="month-prog"><span class="pbar"><span style="width:'+pct+'%;background:'+(pct===100?"var(--ok)":"var(--accent)")+'"></span></span>'
+        +'<span class="plabel">'+done+'/'+m.tasks.length+' · '+pct+'%</span><span class="caret">▶</span></span>'
+      +'</button>'
+      +'<div class="month-body">'+tasksHTML
+      +'<div class="add-row"><input type="text" placeholder="Add a task for this month…" onkeydown="if(event.key===\'Enter\'){addMonthTask('+m.ordinal+',this.value);this.value=\'\';}">'
+      +'<button class="btn sm" onclick="var i=this.previousElementSibling;addMonthTask('+m.ordinal+',i.value);i.value=\'\';">Add</button></div></div>';
+    host.appendChild(wrap);
+  });
+}
+function findMonth(ord){ return data.months.find(function(m){return m.ordinal===ord;}); }
+function toggleMonthTask(ord,id,checked){ var m=findMonth(ord); if(!m)return; var t=m.tasks.find(function(x){return x.id===id;}); if(t){t.done=checked;save();} refreshMonthProgress(ord); renderProgress(); updateCounts(); }
+function refreshMonthProgress(ord){
+  var m=findMonth(ord); var wrap=document.querySelector('.month[data-ord="'+ord+'"]'); if(!m||!wrap)return;
+  var done=m.tasks.filter(function(t){return t.done;}).length; var pct=m.tasks.length?Math.round(done/m.tasks.length*100):0;
+  var bar=wrap.querySelector('.pbar>span'); var label=wrap.querySelector('.plabel');
+  if(bar){bar.style.width=pct+"%";bar.style.background=(pct===100?"var(--ok)":"var(--accent)");}
+  if(label){label.textContent=done+"/"+m.tasks.length+" · "+pct+"%";}
+  var rows=wrap.querySelectorAll('.task'); m.tasks.forEach(function(t,i){ if(rows[i]) rows[i].classList.toggle("done",t.done); });
+}
+function addMonthTask(ord,text){ text=(text||"").trim(); if(!text)return; var m=findMonth(ord); m.tasks.push({id:uid(),task:text,done:false,milestone:false}); save(); renderMonths(); reopenMonth(ord); renderProgress(); updateCounts(); }
+function delMonthTask(ord,id){ var m=findMonth(ord); m.tasks=m.tasks.filter(function(x){return x.id!==id;}); save(); renderMonths(); reopenMonth(ord); renderProgress(); updateCounts(); }
+function reopenMonth(ord){ var w=document.querySelector('.month[data-ord="'+ord+'"]'); if(w)w.classList.add("open"); }
+function resetCalendar(){ if(!confirm("Uncheck every task across all 12 months?"))return; data.months.forEach(function(m){m.tasks.forEach(function(t){t.done=false;});}); save(); renderMonths(); renderProgress(); updateCounts(); }
+
+function changeMoveIn(val){
+  var mi=parseInt(val,10);
+  if(mi===data.moveInMonth) return;
+  if(!confirm("Change your move-in month? This rebuilds the 12-month calendar (its checkmarks will reset). Your Week 1 list, inventory and documents are kept.")){
+    document.getElementById("moveInSel").value=data.moveInMonth; return;
+  }
+  data.moveInMonth=mi; data.months=buildMonths(mi); save(); renderMonths(); renderProgress(); updateCounts();
+  toast("Calendar rebuilt from "+MONTH_NAMES[mi]+".");
+}
+
+/* ---------- inventory ---------- */
+function warrantyStatus(w){
+  if(!w) return {cls:"none",label:"—"};
+  var d=parseDate(w); if(!d) return {cls:"none",label:"—"};
+  var days=daysBetween(todayMid(),d);
+  if(days<0) return {cls:"bad",label:"Expired"};
+  if(days<=60) return {cls:"warn",label:"Expires soon"};
+  return {cls:"ok",label:"Active"};
+}
+function addInv(){ data.inventory.push({id:uid(),name:"",location:"",warranty:""}); save(); renderInv(); updateCounts(); switchTab("inventory"); }
+function delInv(id){ data.inventory=data.inventory.filter(function(x){return x.id!==id;}); save(); renderInv(); updateCounts(); }
+function updInv(id,key,val){ var it=data.inventory.find(function(x){return x.id===id;}); if(!it)return; it[key]=val; save(); if(key==="warranty") refreshInvRow(id); }
+function refreshInvRow(id){
+  var it=data.inventory.find(function(x){return x.id===id;}); var row=document.getElementById("invrow_"+id); if(!it||!row)return;
+  var st=warrantyStatus(it.warranty); row.children[3].innerHTML='<span class="chip '+st.cls+'">'+st.label+'</span>';
+}
+function renderInv(){
+  var body=document.getElementById("bodyInv"); body.innerHTML="";
+  if(!data.inventory.length){
+    body.innerHTML='<tr><td colspan="5"><div class="empty"><p>No items yet. Add your big-ticket systems and appliances — furnace, water heater, fridge, washer, dryer, HVAC — with their warranty dates.</p>'
+      +'<button class="btn accent" onclick="addInv()">+ Add your first item</button></div></td></tr>';
+    return;
+  }
+  data.inventory.forEach(function(it){
+    var st=warrantyStatus(it.warranty);
+    var tr=document.createElement("tr"); tr.id="invrow_"+it.id;
+    tr.innerHTML=
+      '<td><input type="text" value="'+attr(it.name)+'" placeholder="e.g. Refrigerator" oninput="updInv(\''+it.id+'\',\'name\',this.value)"></td>'
+      +'<td><input type="text" value="'+attr(it.location)+'" placeholder="e.g. Kitchen" oninput="updInv(\''+it.id+'\',\'location\',this.value)"></td>'
+      +'<td><input type="date" value="'+attr(it.warranty)+'" onchange="updInv(\''+it.id+'\',\'warranty\',this.value)"></td>'
+      +'<td><span class="chip '+st.cls+'">'+st.label+'</span></td>'
+      +'<td><button class="row-del" title="Delete" onclick="delInv(\''+it.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+}
+
+/* ---------- tabs ---------- */
+function switchTab(name){
+  document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("active",b.getAttribute("data-tab")===name); });
+  document.querySelectorAll(".panel").forEach(function(p){ p.classList.toggle("active",p.id==="panel-"+name); });
+  try{ localStorage.setItem(ACTIVE_TAB_KEY,name); }catch(e){}
+}
+document.getElementById("tabs").addEventListener("click",function(e){ var b=e.target.closest(".tab"); if(b) switchTab(b.getAttribute("data-tab")); });
+
+/* ---------- export / import ---------- */
+function csvCell(v){ return '"'+esc(v).replace(/"/g,'""')+'"'; }
+function csvRow(a){ return a.map(csvCell).join(",")+"\r\n"; }
+function exportCSV(){
+  var out="THE FIRST-YEAR HOMEOWNER KIT — EXPORT\r\n";
+  out+=csvRow(["Generated",new Date().toString()]);
+  out+=csvRow(["Move-in month",MONTH_NAMES[data.moveInMonth]]);
+  out+="\r\n";
+  out+="WEEK 1 MOVE-IN CHECKLIST\r\n"+csvRow(["Task","Done"]);
+  data.week1.forEach(function(t){ out+=csvRow([t.task,t.done?"yes":"no"]); });
+  out+="\r\n12-MONTH CALENDAR\r\n"+csvRow(["Month #","Calendar month","Type","Task","Done"]);
+  data.months.forEach(function(m){ m.tasks.forEach(function(t){ out+=csvRow([m.ordinal,MONTH_NAMES[m.cal],t.milestone?"milestone":"seasonal",t.task,t.done?"yes":"no"]); }); });
+  out+="\r\nSTARTER HOME INVENTORY\r\n"+csvRow(["Name","Location","Warranty ends","Status"]);
+  data.inventory.forEach(function(it){ out+=csvRow([it.name,it.location,it.warranty,warrantyStatus(it.warranty).label]); });
+  out+="\r\nMOVE-IN DOCUMENT CHECKLIST\r\n"+csvRow(["Document","Gathered"]);
+  data.docs.forEach(function(t){ out+=csvRow([t.task,t.done?"yes":"no"]); });
+  downloadFile("first-year-homeowner-"+dateStamp()+".csv",out,"text/csv"); toast("CSV exported.");
+}
+function exportBackup(){
+  downloadFile("first-year-homeowner-backup-"+dateStamp()+".json",JSON.stringify({app:"first-year-homeowner",version:1,exported:new Date().toISOString(),data:data},null,2),"application/json");
+  toast("Backup saved.");
+}
+function importBackup(evt){
+  var file=evt.target.files[0]; if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var parsed=JSON.parse(reader.result); var inc=parsed.data?parsed.data:parsed;
+      if(!inc||(!inc.week1&&!inc.months&&!inc.docs&&!inc.inventory)) throw new Error("Unrecognised file");
+      if(!confirm("Import this backup? It will REPLACE all current data in this browser.")){ evt.target.value=""; return; }
+      data={
+        moveInMonth:(typeof inc.moveInMonth==="number"?inc.moveInMonth:new Date().getMonth()),
+        week1:inc.week1||blankData(0).week1,
+        docs:inc.docs||blankData(0).docs,
+        months:inc.months||buildMonths(typeof inc.moveInMonth==="number"?inc.moveInMonth:new Date().getMonth()),
+        inventory:inc.inventory||[]
+      };
+      data.week1.forEach(function(t){ if(!t.id)t.id=uid(); });
+      data.docs.forEach(function(t){ if(!t.id)t.id=uid(); });
+      data.inventory.forEach(function(it){ if(!it.id)it.id=uid(); });
+      data.months.forEach(function(m){ m.tasks.forEach(function(t){ if(!t.id)t.id=uid(); }); });
+      save(); buildMoveInSelect(); renderAll(); toast("Backup imported.");
+    }catch(e){ alert("Could not import that file. Use a Backup (.json) exported from this tool.\n\n("+e.message+")"); }
+    evt.target.value="";
+  };
+  reader.readAsText(file);
+}
+function downloadFile(name,content,mime){
+  var blob=new Blob([content],{type:mime}); var url=URL.createObjectURL(blob);
+  var a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },100);
+}
+function dateStamp(){ var d=new Date(); function p(n){return(n<10?"0":"")+n;} return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate()); }
+
+var toastTimer;
+function toast(msg){ var el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.classList.remove("show");},2600); }
+
+function buildMoveInSelect(){
+  var sel=document.getElementById("moveInSel");
+  sel.innerHTML=MONTH_NAMES.map(function(n,i){ return '<option value="'+i+'"'+(i===data.moveInMonth?" selected":"")+'>'+n+'</option>'; }).join("");
+}
+
+/* ---------- init ---------- */
+(function init(){
+  data.week1.forEach(function(t){ if(!t.id)t.id=uid(); });
+  data.docs.forEach(function(t){ if(!t.id)t.id=uid(); });
+  data.inventory.forEach(function(it){ if(!it.id)it.id=uid(); });
+  data.months.forEach(function(m){ m.tasks.forEach(function(t){ if(!t.id)t.id=uid(); }); });
+  buildMoveInSelect();
+  renderAll();
+  var saved=null; try{ saved=localStorage.getItem(ACTIVE_TAB_KEY); }catch(e){}
+  if(saved) switchTab(saved);
+})();
+</script>
+</body>
+</html>
