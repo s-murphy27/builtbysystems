@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Home Inventory &amp; Insurance Vault</title>
+<style>
+  :root{
+    --bg:#F8F6F1; --surface:#FFFFFF; --ink:#16324F; --accent:#E0922F;
+    --muted:#5A6B75; --hair:#E2DED4; --hair-strong:#CBD3D8;
+    --ok:#2F8F5B; --ok-bg:#E7F2EC; --warn:#E0922F; --warn-bg:#FBEFDD; --bad:#C0492F; --bad-bg:#F7E4DF;
+    --shadow:0 1px 2px rgba(22,50,79,.05);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px;}
+
+  header.top{background:var(--ink);color:#fff;border-bottom:3px solid var(--accent);}
+  .top-inner{max-width:1240px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand .mark{width:40px;height:40px;border:2px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-weight:800;font-size:15px;color:var(--accent);letter-spacing:.5px;}
+  .brand h1{font-size:20px;font-weight:800;letter-spacing:-.2px;line-height:1.1;}
+  .brand .sub{font-size:12px;color:#A9C0D4;letter-spacing:.04em;text-transform:uppercase;margin-top:3px;}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{appearance:none;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:transform .04s,box-shadow .15s,background .15s;line-height:1;}
+  .btn:hover{box-shadow:var(--shadow);}
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:transparent;border-color:rgba(255,255,255,.3);color:#fff;}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#2a1c06;}
+  .btn.accent:hover{filter:brightness(1.04);}
+  .btn.sm{padding:6px 10px;font-size:12px;}
+
+  /* value banner */
+  .valbar{margin:22px 0 6px;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:14px;}
+  @media(max-width:820px){.valbar{grid-template-columns:1fr 1fr;}}
+  .vstat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);}
+  .vstat.lead{border-left:4px solid var(--accent);}
+  .vstat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .vstat .v{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-top:3px;}
+  .vstat.lead .v{color:var(--ink);}
+
+  .tabs{display:flex;gap:4px;margin:22px 0 0;border-bottom:2px solid var(--hair);flex-wrap:wrap;}
+  .tab{appearance:none;border:none;background:transparent;font-family:inherit;cursor:pointer;padding:12px 18px;font-size:14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:8px;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--ink);border-bottom-color:var(--accent);}
+  .tab .pill{background:var(--bg);border:1px solid var(--hair);border-radius:20px;font-size:11px;padding:1px 8px;font-weight:700;color:var(--muted);}
+
+  .panel{display:none;padding:26px 0 60px;}
+  .panel.active{display:block;}
+  .panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .panel-head h2{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+  .panel-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:66ch;}
+  .panel-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+  .table-scroll{overflow-x:auto;border:1px solid var(--hair);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:1080px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;padding:12px 10px;border-bottom:2px solid var(--hair);background:#FCFBF8;white-space:nowrap;}
+  tbody td{padding:6px 8px;border-bottom:1px solid var(--hair);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FCFBF8;}
+  td input{width:100%;border:1px solid transparent;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);padding:6px 7px;border-radius:6px;}
+  td input:hover{border-color:var(--hair);}
+  td input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+  td input[type=date]{min-width:128px;}
+  td input.num{text-align:right;}
+  .col-num{text-align:right;}
+  .row-del{color:var(--muted);border:none;background:transparent;font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;border-radius:6px;}
+  .row-del:hover{color:var(--bad);background:var(--bad-bg);}
+  .empty{padding:46px 24px;text-align:center;color:var(--muted);}
+  .empty p{margin-bottom:10px;font-size:15px;}
+  .linkish{color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  select.filter{border:1px solid var(--hair-strong);background:var(--surface);font-family:inherit;font-size:13px;padding:8px 12px;border-radius:8px;color:var(--ink);font-weight:600;}
+
+  /* portfolio */
+  .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:760px){.pf-grid{grid-template-columns:1fr;}}
+  .pf-card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+  .pf-card h3{font-size:16px;font-weight:800;margin-bottom:18px;letter-spacing:-.2px;}
+  .bar-row{margin-bottom:14px;}
+  .bar-row .lbl{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px;}
+  .bar-row .lbl .amt{font-weight:700;}
+  .bar-track{height:10px;background:var(--bg);border:1px solid var(--hair);border-radius:20px;overflow:hidden;}
+  .bar-track>span{display:block;height:100%;background:var(--accent);border-radius:20px;}
+  .pf-empty{color:var(--muted);font-style:italic;}
+
+  /* claim report */
+  .claim-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
+  .claim-meta .f{display:flex;flex-direction:column;gap:5px;}
+  .claim-meta label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;}
+  .claim-meta input{border:1px solid var(--hair-strong);background:#fff;font-family:inherit;font-size:14px;padding:8px 11px;border-radius:8px;color:var(--ink);min-width:220px;}
+  .claim-meta input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,146,47,.12);}
+
+  #claimReport{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:34px;box-shadow:var(--shadow);}
+  .report-head{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:24px;}
+  .report-head h1{font-size:24px;font-weight:800;letter-spacing:-.3px;}
+  .report-head .meta{color:var(--muted);font-size:13.5px;margin-top:6px;display:flex;gap:20px;flex-wrap:wrap;}
+  .report-grand{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:16px 20px;margin-bottom:26px;}
+  .report-grand .g-k{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;}
+  .report-grand .g-v{font-size:30px;font-weight:800;letter-spacing:-.5px;}
+  .room-block{margin-bottom:26px;page-break-inside:avoid;}
+  .room-block h3{font-size:16px;font-weight:800;border-bottom:1px solid var(--hair-strong);padding-bottom:7px;margin-bottom:4px;display:flex;justify-content:space-between;}
+  .room-block h3 .rt{color:var(--muted);font-weight:700;font-size:14px;}
+  table.report-tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:0;}
+  table.report-tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;padding:8px 8px;border-bottom:1px solid var(--hair);}
+  table.report-tbl td{padding:7px 8px;border-bottom:1px solid var(--hair);vertical-align:top;}
+  table.report-tbl td.num,table.report-tbl th.num{text-align:right;white-space:nowrap;}
+  table.report-tbl .sub td{border-top:1px solid var(--hair-strong);border-bottom:none;font-weight:700;padding-top:9px;}
+
+  footer.foot{border-top:1px solid var(--hair);padding:26px 0 50px;color:var(--muted);font-size:12.5px;}
+  footer.foot .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hint{font-size:12px;color:var(--muted);}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(22,50,79,.25);}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media print{
+    @page{margin:14mm;}
+    body{background:#fff;font-size:11.5px;}
+    header.top,.valbar,.tabs,.toolbar,.panel-tools,.claim-meta,#toast,.btn,.row-del{display:none !important;}
+    .panel:not(.active){display:none !important;}
+    .panel.active{display:block !important;padding:0;}
+    .panel-head p{display:none;}
+    .panel-head h2{font-size:16px;border-bottom:2px solid var(--ink);padding-bottom:4px;}
+    #claimReport{box-shadow:none;border:none;padding:0;}
+    .pf-card,.table-scroll{box-shadow:none;border:1px solid #999;}
+    table{min-width:0;} td input{border:none;padding:2px;}
+    thead th,tbody tr:hover{background:transparent;}
+    .report-grand{border:1px solid #999;}
+    .wrap{max-width:none;padding:0;}
+    .pf-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark">IV</div>
+      <div>
+        <h1>The Home Inventory &amp; Insurance Vault</h1>
+        <div class="sub">Proof of what you own — before you need it</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn ghost" onclick="exportCSV()">⤓ Export CSV</button>
+      <button class="btn ghost" onclick="exportBackup()">⛁ Backup</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()">⤒ Import</button>
+      <button class="btn ghost" onclick="window.print()">⎙ Print</button>
+      <input id="importFile" type="file" accept=".json,application/json" class="visually-hidden" onchange="importBackup(event)">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="valbar">
+    <div class="vstat lead"><div class="k">Total estimated value</div><div class="v" id="totalValue">$0</div></div>
+    <div class="vstat"><div class="k">Items catalogued</div><div class="v" id="itemCount">0</div></div>
+    <div class="vstat"><div class="k">Rooms covered</div><div class="v" id="roomCount">0</div></div>
+    <div class="vstat"><div class="k">Total purchase cost</div><div class="v" id="totalPurchase">$0</div></div>
+  </section>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="inventory">📋 Inventory <span class="pill" id="cntItems">0</span></button>
+    <button class="tab" data-tab="portfolio">📊 Portfolio Totals</button>
+    <button class="tab" data-tab="claim">🛡 Claim-Ready Report</button>
+  </nav>
+
+  <!-- INVENTORY -->
+  <section class="panel active" id="panel-inventory">
+    <div class="panel-head">
+      <div>
+        <h2>Room-by-Room Inventory</h2>
+        <p>Catalogue everything you own, room by room. The more detail now — serial numbers, purchase price, a note on where the photo lives — the faster and larger your claim gets paid later.</p>
+      </div>
+      <div class="panel-tools">
+        <label class="hint" for="roomFilter">Room</label>
+        <select class="filter" id="roomFilter" onchange="renderInventory()"></select>
+        <button class="btn accent" onclick="addItem()">+ Add item</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="tbl">
+        <thead><tr>
+          <th>Item</th><th>Room</th><th>Category</th><th>Brand / Model</th><th>Serial #</th>
+          <th>Purchased</th><th class="col-num">Paid</th><th class="col-num">Est. value</th><th>Photo reference</th><th></th>
+        </tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:10px;">Tip: "Photo reference" is a note pointing to where your photos/receipts live (e.g. "Google Photos — Living room album", "receipts/tv.pdf"). This tool stores text, not the images — keep the actual photos in your cloud drive.</p>
+    <datalist id="roomsList"></datalist>
+    <datalist id="catsList"></datalist>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section class="panel" id="panel-portfolio">
+    <div class="panel-head">
+      <div>
+        <h2>Portfolio Totals</h2>
+        <p>Where your value sits. Use this to sanity-check your coverage — if the total here is higher than your policy's contents limit, you're underinsured.</p>
+      </div>
+    </div>
+    <div class="pf-grid">
+      <div class="pf-card"><h3>Estimated value by room</h3><div id="byRoom"></div></div>
+      <div class="pf-card"><h3>Estimated value by category</h3><div id="byCat"></div></div>
+    </div>
+  </section>
+
+  <!-- CLAIM REPORT -->
+  <section class="panel" id="panel-claim">
+    <div class="panel-head">
+      <div>
+        <h2>Claim-Ready Report</h2>
+        <p>A clean proof-of-ownership document grouped by room, with serial numbers and totals — formatted to hand straight to an insurer or adjuster. Add your details, then print to PDF or export the claim CSV.</p>
+      </div>
+      <div class="panel-tools">
+        <button class="btn accent" onclick="window.print()">⎙ Print / Save as PDF</button>
+        <button class="btn" onclick="exportClaimCSV()">⤓ Export claim CSV</button>
+      </div>
+    </div>
+    <div class="claim-meta">
+      <div class="f"><label for="ownerName">Policyholder name</label><input id="ownerName" type="text" placeholder="Your full name" oninput="updMeta('ownerName',this.value)"></div>
+      <div class="f"><label for="policyNumber">Policy number</label><input id="policyNumber" type="text" placeholder="Optional" oninput="updMeta('policyNumber',this.value)"></div>
+      <div class="f"><label for="propAddr">Property address</label><input id="propAddr" type="text" placeholder="Optional" oninput="updMeta('propAddr',this.value)"></div>
+    </div>
+    <div id="claimReport"></div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>The Home Inventory &amp; Insurance Vault — your data is saved automatically in this browser. Nothing is sent anywhere.</span>
+    <span>Back up regularly with <b>Export CSV</b> or <b>Backup</b>.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+var STORAGE_KEY="home_inventory_data_v1";
+var ACTIVE_TAB_KEY="home_inventory_tab_v1";
+
+var DEFAULT_ROOMS=["Living Room","Kitchen","Primary Bedroom","Bedroom","Bathroom","Dining Room","Home Office","Garage","Basement","Laundry Room","Hallway / Entry","Outdoor / Shed"];
+var DEFAULT_CATS=["Electronics","Appliances","Furniture","Jewelry & Watches","Clothing","Tools & Equipment","Kitchenware","Art & Collectibles","Sporting Goods","Musical Instruments","Documents","Other"];
+
+var data=load();
+
+function blankData(){ return {items:[], meta:{ownerName:"",policyNumber:"",propAddr:""}}; }
+function load(){
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return blankData();
+    var d=JSON.parse(raw);
+    if(!d.items) d.items=[];
+    if(!d.meta) d.meta={ownerName:"",policyNumber:"",propAddr:""};
+    return d;
+  }catch(e){ return blankData(); }
+}
+function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){ toast("Could not save — storage may be blocked."); } }
+
+var idSeq=0;
+function uid(){ return "id"+Math.abs(Date.now()^(performance.now()*1000|0)).toString(36)+(idSeq++).toString(36); }
+function esc(v){ return (v==null?"":String(v)); }
+function attr(v){ return esc(v).replace(/"/g,"&quot;"); }
+function num(v){ return Number(v)||0; }
+function fmtMoney(n){ n=num(n); return "$"+n.toLocaleString("en-US",{minimumFractionDigits:(n%1?2:0),maximumFractionDigits:2}); }
+function parseDate(s){ if(!s) return null; var d=new Date(s+"T00:00:00"); return isNaN(d)?null:d; }
+function fmtDate(s){ var d=parseDate(s); if(!d) return ""; var m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return m[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear(); }
+
+/* ---------- render ---------- */
+function renderAll(){ buildDatalists(); buildRoomFilter(); renderInventory(); renderTotals(); renderPortfolio(); renderClaim(); syncMetaInputs(); }
+
+function buildDatalists(){
+  var rooms=allRooms();
+  document.getElementById("roomsList").innerHTML=rooms.map(function(r){return '<option value="'+attr(r)+'">';}).join("");
+  document.getElementById("catsList").innerHTML=allCats().map(function(c){return '<option value="'+attr(c)+'">';}).join("");
+}
+function allRooms(){
+  var set={}; DEFAULT_ROOMS.forEach(function(r){set[r]=true;});
+  data.items.forEach(function(it){ if(it.room) set[it.room]=true; });
+  return Object.keys(set);
+}
+function allCats(){
+  var set={}; DEFAULT_CATS.forEach(function(c){set[c]=true;});
+  data.items.forEach(function(it){ if(it.category) set[it.category]=true; });
+  return Object.keys(set);
+}
+function buildRoomFilter(){
+  var sel=document.getElementById("roomFilter"); var prev=sel.value;
+  var rooms={}; data.items.forEach(function(it){ if(it.room) rooms[it.room]=true; });
+  var list=Object.keys(rooms).sort();
+  sel.innerHTML='<option value="all">All rooms</option>'+list.map(function(r){return '<option value="'+attr(r)+'">'+esc(r)+'</option>';}).join("");
+  if(prev && (prev==="all"||rooms[prev])) sel.value=prev;
+}
+
+function renderTotals(){
+  var totVal=data.items.reduce(function(s,it){return s+num(it.currentValue);},0);
+  var totPaid=data.items.reduce(function(s,it){return s+num(it.purchasePrice);},0);
+  var rooms={}; data.items.forEach(function(it){ if(it.room) rooms[it.room]=true; });
+  document.getElementById("totalValue").textContent=fmtMoney(totVal);
+  document.getElementById("totalPurchase").textContent=fmtMoney(totPaid);
+  document.getElementById("itemCount").textContent=data.items.length;
+  document.getElementById("roomCount").textContent=Object.keys(rooms).length;
+  document.getElementById("cntItems").textContent=data.items.length;
+}
+
+function renderInventory(){
+  var body=document.getElementById("body"); body.innerHTML="";
+  var filter=document.getElementById("roomFilter").value||"all";
+  if(!data.items.length){
+    body.innerHTML='<tr><td colspan="10"><div class="empty"><p>Nothing catalogued yet. Start with the big-ticket rooms — living room electronics, kitchen appliances, bedroom jewelry. Capture serial numbers and what you paid.</p>'
+      +'<button class="btn accent" onclick="addItem()">+ Add your first item</button> &nbsp; <span class="linkish" onclick="loadExamples()">or load example data</span></div></td></tr>';
+    return;
+  }
+  var rows=data.items.filter(function(it){ return filter==="all"||it.room===filter; });
+  if(!rows.length){ body.innerHTML='<tr><td colspan="10"><div class="empty"><p>No items in this room yet.</p></div></td></tr>'; return; }
+  rows.forEach(function(it){
+    var tr=document.createElement("tr"); tr.id="row_"+it.id;
+    tr.innerHTML=
+      txt(it,"item","e.g. 65\" OLED TV")
+      +'<td><input type="text" list="roomsList" value="'+attr(it.room)+'" placeholder="Room" oninput="upd(\''+it.id+'\',\'room\',this.value)"></td>'
+      +'<td><input type="text" list="catsList" value="'+attr(it.category)+'" placeholder="Category" oninput="upd(\''+it.id+'\',\'category\',this.value)"></td>'
+      +txt(it,"brand","Brand / model")
+      +txt(it,"serial","Serial #")
+      +'<td><input type="date" value="'+attr(it.purchaseDate)+'" onchange="upd(\''+it.id+'\',\'purchaseDate\',this.value)"></td>'
+      +money(it,"purchasePrice")
+      +money(it,"currentValue")
+      +txt(it,"photoNote","e.g. Photos app · receipt.pdf")
+      +'<td><button class="row-del" title="Delete" onclick="delItem(\''+it.id+'\')">✕</button></td>';
+    body.appendChild(tr);
+  });
+}
+function txt(it,key,ph){ return '<td><input type="text" value="'+attr(it[key])+'" placeholder="'+attr(ph)+'" oninput="upd(\''+it.id+'\',\''+key+'\',this.value)"></td>'; }
+function money(it,key){ return '<td class="col-num"><input class="num" type="number" min="0" step="0.01" value="'+attr(it[key])+'" placeholder="0" oninput="upd(\''+it.id+'\',\''+key+'\',this.value)"></td>'; }
+
+function upd(id,key,val){
+  var it=data.items.find(function(x){return x.id===id;}); if(!it) return;
+  it[key]=val; save();
+  // recompute aggregate regions (won't disturb the active inventory input's focus)
+  renderTotals();
+  if(key==="currentValue"||key==="purchasePrice"||key==="room"||key==="category"){ renderPortfolio(); }
+  renderClaim();
+}
+
+function addItem(){
+  var lastRoom = data.items.length? data.items[data.items.length-1].room : "";
+  data.items.push({id:uid(),item:"",room:lastRoom,category:"",brand:"",serial:"",purchaseDate:"",purchasePrice:"",currentValue:"",photoNote:""});
+  save(); buildRoomFilter(); renderInventory(); renderTotals(); switchTab("inventory");
+  // focus the new row's first field
+  var rows=document.querySelectorAll("#body tr"); var last=rows[rows.length-1]; if(last){ var inp=last.querySelector("input"); if(inp) inp.focus(); }
+}
+function delItem(id){ data.items=data.items.filter(function(x){return x.id!==id;}); save(); buildRoomFilter(); renderInventory(); renderTotals(); renderPortfolio(); renderClaim(); }
+
+function loadExamples(){
+  data.items.push(
+    {id:uid(),item:'65" OLED TV',room:"Living Room",category:"Electronics",brand:"LG C3",serial:"LG65C3-88421",purchaseDate:"2024-03-12",purchasePrice:"1799",currentValue:"1400",photoNote:"Photos app — Living room"},
+    {id:uid(),item:"Sectional sofa",room:"Living Room",category:"Furniture",brand:"Article Sven",serial:"",purchaseDate:"2023-06-01",purchasePrice:"2199",currentValue:"1600",photoNote:"receipt-sofa.pdf"},
+    {id:uid(),item:"Refrigerator",room:"Kitchen",category:"Appliances",brand:"Samsung RF28",serial:"SR28-CX9920",purchaseDate:"2022-08-20",purchasePrice:"2499",currentValue:"1800",photoNote:"Manual + receipt in Drive"},
+    {id:uid(),item:"Espresso machine",room:"Kitchen",category:"Appliances",brand:"Breville Barista",serial:"BBE870-44120",purchaseDate:"2024-11-02",purchasePrice:"749",currentValue:"650",photoNote:""},
+    {id:uid(),item:"Wedding ring",room:"Primary Bedroom",category:"Jewelry & Watches",brand:"—",serial:"",purchaseDate:"2019-05-10",purchasePrice:"4200",currentValue:"5000",photoNote:"Appraisal — ring-appraisal.pdf"},
+    {id:uid(),item:"Mountain bike",room:"Garage",category:"Sporting Goods",brand:"Trek Marlin 7",serial:"WTU123K0099",purchaseDate:"2023-04-18",purchasePrice:"1099",currentValue:"800",photoNote:"Photos app — Garage"}
+  );
+  save(); buildDatalists(); buildRoomFilter(); renderInventory(); renderTotals(); renderPortfolio(); renderClaim();
+  toast("Loaded 6 example items — edit or delete them anytime.");
+}
+
+/* ---------- portfolio ---------- */
+function groupSum(keyFn){
+  var g={}; data.items.forEach(function(it){ var k=keyFn(it)||"(unassigned)"; g[k]=(g[k]||0)+num(it.currentValue); });
+  return Object.keys(g).map(function(k){return {k:k,v:g[k]};}).sort(function(a,b){return b.v-a.v;});
+}
+function renderBars(hostId, rows){
+  var host=document.getElementById(hostId);
+  if(!rows.length||rows.every(function(r){return r.v===0;})){ host.innerHTML='<div class="pf-empty">Add items with an estimated value to see the breakdown.</div>'; return; }
+  var max=rows.reduce(function(m,r){return Math.max(m,r.v);},0)||1;
+  host.innerHTML=rows.map(function(r){
+    var pct=Math.round(r.v/max*100);
+    return '<div class="bar-row"><div class="lbl"><span>'+esc(r.k)+'</span><span class="amt">'+fmtMoney(r.v)+'</span></div>'
+      +'<div class="bar-track"><span style="width:'+pct+'%"></span></div></div>';
+  }).join("");
+}
+function renderPortfolio(){ renderBars("byRoom", groupSum(function(it){return it.room;})); renderBars("byCat", groupSum(function(it){return it.category;})); }
+
+/* ---------- claim report ---------- */
+function updMeta(key,val){ data.meta[key]=val; save(); renderClaimHeader(); }
+function syncMetaInputs(){ document.getElementById("ownerName").value=data.meta.ownerName||""; document.getElementById("policyNumber").value=data.meta.policyNumber||""; document.getElementById("propAddr").value=data.meta.propAddr||""; }
+function renderClaim(){ renderClaimReport(); }
+function renderClaimHeader(){ var h=document.querySelector("#claimReport .report-head .meta"); if(h) h.innerHTML=claimMetaHTML(); }
+function claimMetaHTML(){
+  var bits=[];
+  if(data.meta.ownerName) bits.push("<span><b>Policyholder:</b> "+esc(data.meta.ownerName)+"</span>");
+  if(data.meta.policyNumber) bits.push("<span><b>Policy #:</b> "+esc(data.meta.policyNumber)+"</span>");
+  if(data.meta.propAddr) bits.push("<span><b>Property:</b> "+esc(data.meta.propAddr)+"</span>");
+  bits.push("<span><b>Prepared:</b> "+fmtToday()+"</span>");
+  bits.push("<span><b>Items:</b> "+data.items.length+"</span>");
+  return bits.join("");
+}
+function fmtToday(){ var d=new Date(); var m=["January","February","March","April","May","June","July","August","September","October","November","December"]; return m[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear(); }
+
+function renderClaimReport(){
+  var host=document.getElementById("claimReport");
+  var grand=data.items.reduce(function(s,it){return s+num(it.currentValue);},0);
+  if(!data.items.length){ host.innerHTML='<div class="empty"><p>Add items to your inventory and your claim-ready report builds itself here.</p></div>'; return; }
+  // group by room
+  var groups={};
+  data.items.forEach(function(it){ var r=it.room||"(unassigned)"; (groups[r]=groups[r]||[]).push(it); });
+  var roomNames=Object.keys(groups).sort();
+  var blocks=roomNames.map(function(room){
+    var items=groups[room];
+    var sub=items.reduce(function(s,it){return s+num(it.currentValue);},0);
+    var rows=items.map(function(it){
+      return '<tr><td>'+esc(it.item||"—")+'</td><td>'+esc(it.category||"")+'</td><td>'+esc(it.brand||"")+'</td>'
+        +'<td>'+esc(it.serial||"")+'</td><td>'+esc(fmtDate(it.purchaseDate))+'</td>'
+        +'<td class="num">'+(it.purchasePrice!==""&&it.purchasePrice!=null?fmtMoney(it.purchasePrice):"")+'</td>'
+        +'<td class="num">'+(it.currentValue!==""&&it.currentValue!=null?fmtMoney(it.currentValue):"")+'</td></tr>';
+    }).join("");
+    return '<div class="room-block"><h3>'+esc(room)+' <span class="rt">'+items.length+' item'+(items.length!==1?"s":"")+' · '+fmtMoney(sub)+'</span></h3>'
+      +'<table class="report-tbl"><thead><tr><th>Item</th><th>Category</th><th>Brand / Model</th><th>Serial #</th><th>Purchased</th><th class="num">Paid</th><th class="num">Est. value</th></tr></thead>'
+      +'<tbody>'+rows+'<tr class="sub"><td colspan="6">Room subtotal</td><td class="num">'+fmtMoney(sub)+'</td></tr></tbody></table></div>';
+  }).join("");
+  host.innerHTML=
+    '<div class="report-head"><h1>Home Inventory — Proof of Ownership</h1><div class="meta">'+claimMetaHTML()+'</div></div>'
+    +'<div class="report-grand"><span class="g-k">Total estimated value of contents</span><span class="g-v">'+fmtMoney(grand)+'</span></div>'
+    +blocks;
+}
+
+/* ---------- tabs ---------- */
+function switchTab(name){
+  document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("active",b.getAttribute("data-tab")===name); });
+  document.querySelectorAll(".panel").forEach(function(p){ p.classList.toggle("active",p.id==="panel-"+name); });
+  try{ localStorage.setItem(ACTIVE_TAB_KEY,name); }catch(e){}
+}
+document.getElementById("tabs").addEventListener("click",function(e){ var b=e.target.closest(".tab"); if(b) switchTab(b.getAttribute("data-tab")); });
+
+/* ---------- export / import ---------- */
+function csvCell(v){ return '"'+esc(v).replace(/"/g,'""')+'"'; }
+function csvRow(a){ return a.map(csvCell).join(",")+"\r\n"; }
+function exportCSV(){
+  var out="THE HOME INVENTORY & INSURANCE VAULT — FULL INVENTORY\r\n";
+  out+=csvRow(["Generated",new Date().toString()]);
+  out+=csvRow(["Total estimated value",data.items.reduce(function(s,it){return s+num(it.currentValue);},0)]);
+  out+="\r\n";
+  out+=csvRow(["Item","Room","Category","Brand/Model","Serial #","Purchased","Paid","Est. value","Photo reference"]);
+  data.items.forEach(function(it){ out+=csvRow([it.item,it.room,it.category,it.brand,it.serial,it.purchaseDate,it.purchasePrice,it.currentValue,it.photoNote]); });
+  downloadFile("home-inventory-"+dateStamp()+".csv",out,"text/csv"); toast("Full inventory CSV exported.");
+}
+function exportClaimCSV(){
+  var out="HOME INVENTORY — PROOF OF OWNERSHIP (CLAIM REPORT)\r\n";
+  if(data.meta.ownerName) out+=csvRow(["Policyholder",data.meta.ownerName]);
+  if(data.meta.policyNumber) out+=csvRow(["Policy #",data.meta.policyNumber]);
+  if(data.meta.propAddr) out+=csvRow(["Property",data.meta.propAddr]);
+  out+=csvRow(["Prepared",fmtToday()]);
+  out+=csvRow(["Total estimated value",data.items.reduce(function(s,it){return s+num(it.currentValue);},0)]);
+  out+="\r\n";
+  var groups={}; data.items.forEach(function(it){ var r=it.room||"(unassigned)"; (groups[r]=groups[r]||[]).push(it); });
+  Object.keys(groups).sort().forEach(function(room){
+    var items=groups[room]; var sub=items.reduce(function(s,it){return s+num(it.currentValue);},0);
+    out+="ROOM: "+room.toUpperCase()+"\r\n";
+    out+=csvRow(["Item","Category","Brand/Model","Serial #","Purchased","Paid","Est. value"]);
+    items.forEach(function(it){ out+=csvRow([it.item,it.category,it.brand,it.serial,it.purchaseDate,it.purchasePrice,it.currentValue]); });
+    out+=csvRow(["","","","","","Room subtotal",sub]);
+    out+="\r\n";
+  });
+  downloadFile("home-inventory-claim-"+dateStamp()+".csv",out,"text/csv"); toast("Claim-ready CSV exported.");
+}
+function exportBackup(){
+  downloadFile("home-inventory-backup-"+dateStamp()+".json",JSON.stringify({app:"home-inventory-vault",version:1,exported:new Date().toISOString(),data:data},null,2),"application/json");
+  toast("Backup saved.");
+}
+function importBackup(evt){
+  var file=evt.target.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var parsed=JSON.parse(reader.result); var inc=parsed.data?parsed.data:parsed;
+      if(!inc||!inc.items) throw new Error("Unrecognised file");
+      if(!confirm("Import this backup? It will REPLACE all current data in this browser.")){ evt.target.value=""; return; }
+      data={ items:inc.items||[], meta:inc.meta||{ownerName:"",policyNumber:"",propAddr:""} };
+      data.items.forEach(function(it){ if(!it.id) it.id=uid(); });
+      save(); renderAll(); toast("Backup imported.");
+    }catch(e){ alert("Could not import that file. Use a Backup (.json) exported from this tool.\n\n("+e.message+")"); }
+    evt.target.value="";
+  };
+  reader.readAsText(file);
+}
+function downloadFile(name,content,mime){
+  var blob=new Blob([content],{type:mime}); var url=URL.createObjectURL(blob);
+  var a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },100);
+}
+function dateStamp(){ var d=new Date(); function p(n){return(n<10?"0":"")+n;} return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate()); }
+
+var toastTimer;
+function toast(msg){ var el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.classList.remove("show");},2600); }
+
+/* ---------- init ---------- */
+(function init(){
+  data.items.forEach(function(it){ if(!it.id) it.id=uid(); });
+  renderAll();
+  var saved=null; try{ saved=localStorage.getItem(ACTIVE_TAB_KEY); }catch(e){}
+  if(saved) switchTab(saved);
+})();
+</script>
+</body>
+</html>

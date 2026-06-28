@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Home Inventory &amp; Insurance Vault — prove what you owned, get the claim paid</title>
+<meta name="description" content="After a fire, theft or flood, your insurer asks you to prove what you owned — item by item. Most people can't, and the claim shrinks. The Home Inventory & Insurance Vault is the room-by-room record that gets claims paid in full. One payment, yours forever." />
+<meta property="og:title" content="The Home Inventory & Insurance Vault" />
+<meta property="og:description" content="The proof-of-ownership record insurers ask for after a disaster — built room by room, claim-ready, yours forever." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F6F1; --surface:#FFFFFF; --ink:#16324F; --accent:#E0922F; --accent-deep:#C97A1C;
+    --muted:#5A6B75; --hair:#E2DED4; --hair-strong:#CBD3D8; --bad:#C0492F; --ok:#2F8F5B;
+    --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4{font-family:var(--display);font-weight:700;line-height:1.08;letter-spacing:-.02em;}
+  a{color:inherit;}
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 24px;}
+  .narrow{max-width:760px;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:var(--display);font-weight:600;font-size:17px;text-decoration:none;cursor:pointer;background:var(--accent);color:#2a1c06;border:1px solid var(--accent);border-radius:10px;padding:16px 30px;transition:transform .05s,filter .15s,box-shadow .2s;}
+  .btn:hover{filter:brightness(1.04);box-shadow:0 8px 22px rgba(224,146,47,.28);}
+  .btn:active{transform:translateY(1px);}
+  .btn .price{background:rgba(22,50,79,.12);border-radius:6px;padding:2px 9px;font-size:15px;}
+  .btn.lg{font-size:19px;padding:18px 36px;}
+  .kicker{font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);}
+
+  nav.site{position:sticky;top:0;z-index:30;background:rgba(248,246,241,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);}
+  nav.site .row{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:17px;}
+  .logo .mk{width:30px;height:30px;border:2px solid var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+  nav .btn{padding:10px 18px;font-size:15px;}
+
+  header.hero{padding:74px 0 56px;position:relative;overflow:hidden;}
+  .hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--hair) 1px,transparent 1px),linear-gradient(90deg,var(--hair) 1px,transparent 1px);background-size:34px 34px;opacity:.5;mask-image:radial-gradient(ellipse 70% 60% at 72% 16%,#000 0%,transparent 75%);}
+  .hero .wrap{position:relative;}
+  .hero h1{font-size:clamp(36px,5.6vw,60px);max-width:18ch;margin:18px 0 0;}
+  .hero h1 .hl{color:var(--accent-deep);}
+  .hero .sub{font-size:clamp(18px,2.4vw,22px);color:var(--muted);max-width:58ch;margin:22px 0 32px;line-height:1.5;}
+  .hero .cta-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .hero .reassure{font-size:14px;color:var(--muted);} .hero .reassure b{color:var(--ink);}
+
+  /* scenario panel */
+  .scenario{background:var(--ink);color:#fff;border-radius:16px;padding:30px 32px;margin-top:30px;position:relative;overflow:hidden;}
+  .scenario .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:30px 30px;}
+  .scenario .in{position:relative;}
+  .scenario .q{font-family:var(--display);font-weight:600;font-size:clamp(19px,2.4vw,24px);line-height:1.4;}
+  .scenario .q .hl{color:var(--accent);}
+  .scenario .a{color:#C4D2DE;font-size:16px;margin-top:14px;max-width:62ch;}
+
+  section{padding:72px 0;} section.tight{padding:52px 0;}
+  .sec-head{max-width:64ch;margin-bottom:38px;}
+  .sec-head h2{font-size:clamp(28px,4vw,40px);margin:14px 0 0;}
+  .sec-head p{color:var(--muted);font-size:19px;margin-top:16px;}
+  .lede{font-size:clamp(20px,2.6vw,26px);line-height:1.5;font-weight:500;}
+  .lede .em{color:var(--accent-deep);font-weight:600;}
+
+  .modules{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:820px){.modules{grid-template-columns:1fr;}}
+  .mod{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:28px;transition:border-color .2s,transform .2s;}
+  .mod:hover{border-color:var(--hair-strong);transform:translateY(-2px);}
+  .mod .num{font-family:var(--display);font-weight:700;font-size:14px;color:var(--accent-deep);border:1px solid var(--accent);border-radius:7px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+  .mod h3{font-size:20px;margin:16px 0 8px;}
+  .mod p{color:var(--muted);font-size:16px;line-height:1.55;}
+  .mod .tag{display:inline-block;margin-top:14px;font-size:12.5px;font-weight:600;font-family:var(--display);letter-spacing:.03em;color:var(--ink);background:var(--bg);border:1px solid var(--hair);border-radius:20px;padding:4px 11px;}
+
+  .pains{display:grid;grid-template-columns:1fr 1fr;gap:14px 30px;}
+  @media(max-width:680px){.pains{grid-template-columns:1fr;}}
+  .pain{display:flex;gap:13px;align-items:flex-start;font-size:17px;padding:6px 0;}
+  .pain .x{flex:0 0 auto;width:24px;height:24px;border-radius:6px;background:#F7E4DF;color:var(--bad);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-top:1px;}
+
+  /* pairing */
+  .pair{background:var(--surface);border:1px solid var(--accent);border-radius:20px;padding:clamp(30px,4vw,46px);display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;box-shadow:0 10px 30px rgba(224,146,47,.10);}
+  @media(max-width:760px){.pair{grid-template-columns:1fr;gap:24px;}}
+  .pair h2{font-size:clamp(24px,3.4vw,34px);}
+  .pair p{color:var(--muted);font-size:17px;margin-top:14px;}
+  .pair .two{display:flex;align-items:stretch;gap:14px;}
+  .pair .pcol{flex:1;background:var(--bg);border:1px solid var(--hair);border-radius:12px;padding:20px;}
+  .pair .pcol.this{border-color:var(--accent);}
+  .pair .pcol .t{font-family:var(--display);font-weight:700;font-size:15px;}
+  .pair .pcol .d{font-size:13.5px;color:var(--muted);margin-top:6px;}
+  .pair .pcol .pr{font-family:var(--display);font-weight:700;margin-top:12px;font-size:15px;}
+  .pair .plus{display:flex;align-items:center;font-family:var(--display);font-weight:700;font-size:22px;color:var(--accent-deep);}
+
+  /* offer */
+  .offer{background:var(--ink);color:#fff;border-radius:20px;padding:clamp(34px,5vw,56px);position:relative;overflow:hidden;}
+  .offer .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:34px 34px;}
+  .offer .inner{position:relative;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;}
+  @media(max-width:760px){.offer .inner{grid-template-columns:1fr;gap:28px;}}
+  .offer h2{font-size:clamp(28px,4vw,40px);color:#fff;}
+  .offer .checklist{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:10px;}
+  .offer .checklist li{display:flex;gap:11px;font-size:16px;color:#E8EEF3;}
+  .offer .checklist .c{color:var(--accent);font-weight:700;}
+  .price-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:30px;text-align:center;}
+  .price-card .amt{font-family:var(--display);font-weight:700;font-size:58px;line-height:1;letter-spacing:-.03em;}
+  .price-card .amt sup{font-size:26px;top:-.6em;color:var(--accent);}
+  .price-card .once{font-size:13px;color:#A9C0D4;margin:8px 0 22px;letter-spacing:.04em;text-transform:uppercase;}
+  .price-card .btn{width:100%;} .price-card .fine{font-size:13px;color:#A9C0D4;margin-top:14px;}
+
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:760px){.cards3{grid-template-columns:1fr;}}
+  .pcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:24px;text-decoration:none;transition:border-color .2s,transform .2s,box-shadow .2s;}
+  .pcard:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 28px rgba(22,50,79,.08);}
+  .pcard .top{display:flex;justify-content:space-between;align-items:center;}
+  .pcard .badge{font-family:var(--display);font-weight:700;font-size:13px;color:var(--accent-deep);border:1px solid var(--accent);border-radius:7px;padding:4px 9px;}
+  .pcard .pr{font-family:var(--display);font-weight:700;font-size:18px;}
+  .pcard h3{font-size:19px;margin:16px 0 8px;}
+  .pcard p{color:var(--muted);font-size:15px;line-height:1.5;flex:1;}
+  .pcard .go{margin-top:16px;font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--accent-deep);display:inline-flex;align-items:center;gap:7px;}
+
+  .faq details{border-bottom:1px solid var(--hair);}
+  .faq summary{cursor:pointer;list-style:none;padding:20px 4px;font-family:var(--display);font-weight:600;font-size:19px;display:flex;justify-content:space-between;gap:16px;align-items:center;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";font-size:24px;color:var(--accent-deep);transition:transform .2s;}
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq p{padding:0 4px 22px;color:var(--muted);font-size:16.5px;max-width:70ch;}
+
+  footer.foot{border-top:1px solid var(--hair);padding:46px 0;color:var(--muted);font-size:14px;}
+  footer.foot .row{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;}
+  footer.foot a{color:var(--muted);text-decoration:none;} footer.foot a:hover{color:var(--ink);}
+  .center{text-align:center;} .mt-cta{margin-top:34px;}
+</style>
+</head>
+<body>
+
+<nav class="site">
+  <div class="row">
+    <a class="logo" href="https://builtbysystems.online"><span class="mk">IV</span> Built by Systems</a>
+    <a class="btn" href="https://builtbysystems.online">Get the Vault <span class="price">$27</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <span class="kicker">The Home Inventory &amp; Insurance Vault</span>
+    <h1>After the fire, the insurer asks one question: <span class="hl">prove what you owned.</span></h1>
+    <p class="sub">Fire, theft, flood, a burst pipe — when disaster hits, your payout depends on a list you were supposed to have made years ago. Item by item, with values and serial numbers. Almost nobody has it, so claims get underpaid by thousands. This is that list — built before you need it.</p>
+    <div class="cta-row">
+      <a class="btn lg" href="https://builtbysystems.online">Build your vault <span class="price">$27</span></a>
+      <span class="reassure">One-time · <b>Yours forever</b> · Works offline · No subscription</span>
+    </div>
+
+    <div class="scenario">
+      <div class="grid-bg"></div>
+      <div class="in">
+        <div class="q">"Can you provide an itemized list of everything in the home, with proof of ownership and value?" <span class="hl">— Every adjuster, after every loss.</span></div>
+        <div class="a">From memory, after a traumatic loss, the average person recalls maybe 30–40% of what they owned. The rest is money you paid for, never claimed, and never get back. A documented inventory flips that — it's the single thing that separates a full payout from a fight.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap narrow">
+    <p class="lede">You pay your premiums every month for exactly one moment: the claim. And in that moment, the burden of proof is on <span class="em">you</span> — not the insurer. No list, no proof. No proof, no payout. The time to build the record is the boring Tuesday before anything happens, not the worst day of your life.</p>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Why claims get underpaid</span>
+      <h2>What goes wrong without a record</h2>
+    </div>
+    <div class="pains">
+      <div class="pain"><span class="x">✕</span><span>You can't remember 60% of what you owned — so you never claim it.</span></div>
+      <div class="pain"><span class="x">✕</span><span>No serial numbers or receipts, so the adjuster lowballs the value.</span></div>
+      <div class="pain"><span class="x">✕</span><span>The claim drags on for weeks while you reconstruct your life from memory.</span></div>
+      <div class="pain"><span class="x">✕</span><span>You discover you were underinsured — after it's too late to fix it.</span></div>
+      <div class="pain"><span class="x">✕</span><span>High-value items (jewelry, electronics) get disputed without documentation.</span></div>
+      <div class="pain"><span class="x">✕</span><span>The photos you "had somewhere" went up with the house.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">What's inside</span>
+      <h2>The record that gets claims paid in full</h2>
+      <p>A real tool, not a printable. Catalogue your home once, and it builds the proof-of-ownership document your insurer wants — automatically.</p>
+    </div>
+    <div class="modules">
+      <div class="mod"><div class="num">01</div><h3>Room-by-room inventory</h3><p>Log every item with the details that matter to an adjuster: room, category, brand and model, serial number, purchase date, what you paid, current estimated value, and a note pointing to your photos and receipts.</p><span class="tag">Adjuster-grade detail</span></div>
+      <div class="mod"><div class="num">02</div><h3>Portfolio totals</h3><p>See your total estimated value at a glance, broken down by room and by category. Instantly spot whether you're underinsured — if your contents are worth more than your policy limit, you'll know now, not after a loss.</p><span class="tag">Coverage gap check</span></div>
+      <div class="mod"><div class="num">03</div><h3>Claim-ready report</h3><p>One click turns your inventory into a clean proof-of-ownership document — grouped by room, with serial numbers, subtotals and a grand total. Add your policy details, print to PDF or export the CSV, and hand it straight to your insurer.</p><span class="tag">Hand it to the adjuster</span></div>
+    </div>
+    <p class="center" style="margin-top:28px;color:var(--muted);font-size:15px;">Saves automatically · Export to CSV · Print / Save as PDF · Full backup &amp; restore · Works on any device, fully offline</p>
+  </div>
+</section>
+
+<!-- PAIRING with flagship -->
+<section class="tight">
+  <div class="wrap">
+    <div class="pair">
+      <div>
+        <span class="kicker">Better together</span>
+        <h2>The perfect pairing with the Home Operations System</h2>
+        <p>Two halves of one job. The Home Operations System keeps your house <em>running</em> — every system serviced and on schedule. The Vault protects what's <em>inside</em> it — proof of every belonging, ready for a claim. Run the home, protect the contents. Most owners end up wanting both.</p>
+        <a class="btn" href="/home-operations-system/" style="margin-top:8px;">Explore the Home Operations System →</a>
+      </div>
+      <div class="two">
+        <div class="pcol"><div class="t">Home Operations System</div><div class="d">Runs the house: systems, schedules, repairs, documents.</div><div class="pr">$37</div></div>
+        <div class="plus">+</div>
+        <div class="pcol this"><div class="t">Inventory &amp; Insurance Vault</div><div class="d">Protects the contents: proof of ownership, claim-ready.</div><div class="pr">$27 · you're here</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section id="buy">
+  <div class="wrap">
+    <div class="offer">
+      <div class="grid-bg"></div>
+      <div class="inner">
+        <div>
+          <h2>Spend an afternoon now. Save thousands later.</h2>
+          <p style="color:#C4D2DE;font-size:18px;margin-top:16px;">One payment. Yours forever. Build it room by room this weekend and never face an adjuster empty-handed.</p>
+          <ul class="checklist">
+            <li><span class="c">✓</span> Room-by-room belongings inventory</li>
+            <li><span class="c">✓</span> Serial numbers, values &amp; photo references</li>
+            <li><span class="c">✓</span> Portfolio totals + underinsurance check</li>
+            <li><span class="c">✓</span> One-click claim-ready proof-of-ownership report</li>
+            <li><span class="c">✓</span> Works offline · saves automatically · no subscription</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <div class="amt"><sup>$</sup>27</div>
+          <div class="once">One-time · yours forever</div>
+          <a class="btn lg" href="https://builtbysystems.online">Get instant access</a>
+          <div class="fine">Instant download · any device</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YOU MIGHT ALSO NEED -->
+<section class="tight">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">The full line</span>
+      <h2>You might also need</h2>
+      <p>Built by Systems makes one tool for each stage of owning a home. Add the ones that fit where you are.</p>
+    </div>
+    <div class="cards3">
+      <a class="pcard" href="/home-operations-system/">
+        <div class="top"><span class="badge">FLAGSHIP</span><span class="pr">$37</span></div>
+        <h3>The Home Operations System</h3>
+        <p>The full ongoing command center — every system tracked, next-due dates calculated, repairs and documents logged for the life of the home.</p>
+        <span class="go">View the system →</span>
+      </a>
+      <a class="pcard" href="/first-year-homeowner/">
+        <div class="top"><span class="badge">START HERE</span><span class="pr">$19</span></div>
+        <h3>The First-Year Homeowner Kit</h3>
+        <p>Just bought the place? Get your first 12 months on rails — week-one checklist, month-by-month calendar, starter inventory and documents.</p>
+        <span class="go">View the kit →</span>
+      </a>
+      <a class="pcard" href="/multi-property-edition/">
+        <div class="top"><span class="badge">SCALE</span><span class="pr">$67</span></div>
+        <h3>The Multi-Property Edition</h3>
+        <p>More than one home or rental? Run every property's systems, costs and schedules from a single dashboard.</p>
+        <span class="go">View the edition →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="tight faq">
+  <div class="wrap narrow">
+    <div class="sec-head"><span class="kicker">Questions</span><h2>Before you buy</h2></div>
+    <details open><summary>Does this store my actual photos and receipts?</summary><p>It stores text references — a note pointing to where each photo or receipt lives (your phone's photo album, a cloud drive folder, a PDF). That keeps the tool fast, private and offline. Keep the images themselves in your cloud storage so they survive a loss; the Vault is the organized index that ties them to each item and value.</p></details>
+    <details><summary>How is this better than a spreadsheet?</summary><p>It's purpose-built for claims. It totals your value by room and category, flags underinsurance, and generates a formatted proof-of-ownership report grouped by room with serial numbers and subtotals — ready to hand to an adjuster. A blank spreadsheet does none of that for you.</p></details>
+    <details><summary>Where is my data stored? Is it private?</summary><p>Locally, in your own browser. Nothing is uploaded, there's no account, and it works fully offline. Use Backup to save a copy somewhere safe — ideally off-site or in the cloud, so your record survives the very disaster it's built for.</p></details>
+    <details><summary>Is it a subscription?</summary><p>No. One payment, yours forever. No logins, no monthly fee.</p></details>
+    <details><summary>I already own the Home Operations System — do I need this too?</summary><p>They do different jobs. The Operations System runs your home's <em>systems</em>; the Vault documents your <em>belongings</em> for insurance. Together they cover both sides of protecting your home and what's in it.</p></details>
+  </div>
+</section>
+
+<section class="center tight">
+  <div class="wrap narrow">
+    <h2 style="font-size:clamp(26px,4vw,38px)">The list you hope you never need is the one that pays for itself.</h2>
+    <div class="mt-cta">
+      <a class="btn lg" href="https://builtbysystems.online">Get the Inventory &amp; Insurance Vault <span class="price">$27</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap row">
+    <span>© Built by Systems — tools that actually do the job.</span>
+    <span><a href="https://builtbysystems.online">builtbysystems.online</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
