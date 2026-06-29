@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free First-Year Homeowner Maintenance Calendar — Built by Systems</title>
+<meta name="description" content="Get the free First-Year Homeowner Maintenance Calendar — every month's must-do home tasks on one simple schedule. No subscription, no spam." />
+<style>
+  :root{
+    --cream:#F8F6F1; --navy:#16324F; --amber:#E0922F; --amber-dk:#C97F1E;
+    --muted:#43525C; --line:#E3DFD6; --white:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--cream);color:var(--navy);line-height:1.62;font-size:17px;
+    -webkit-font-smoothing:antialiased;
+    background-image:linear-gradient(rgba(22,50,79,.035) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(22,50,79,.035) 1px,transparent 1px);
+    background-size:46px 46px;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:32px 22px 60px;}
+  .brandbar{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0 40px;}
+  .brandbar svg{width:34px;height:auto;display:block;}
+  .brandbar span{font-weight:800;letter-spacing:.14em;font-size:14px;color:var(--navy);}
+  .eyebrow{text-align:center;color:var(--amber);font-weight:800;letter-spacing:.2em;
+    font-size:13px;text-transform:uppercase;margin-bottom:16px;}
+  h1{text-align:center;font-size:clamp(33px,6.4vw,50px);line-height:1.07;font-weight:800;
+    letter-spacing:-.01em;margin-bottom:14px;}
+  .hr{width:66px;height:5px;border-radius:3px;background:var(--amber);margin:0 auto 24px;}
+  .sub{text-align:center;font-size:clamp(17px,2.6vw,20px);color:var(--muted);
+    max-width:560px;margin:0 auto 32px;}
+  .sub b{color:var(--amber-dk);}
+  .card{background:var(--white);border:1px solid var(--line);border-top:6px solid var(--amber);
+    border-radius:16px;padding:30px 26px;box-shadow:0 10px 34px rgba(22,50,79,.08);max-width:520px;margin:0 auto;}
+  .card h2{font-size:22px;font-weight:800;text-align:center;margin-bottom:6px;}
+  .card p.small{text-align:center;color:var(--muted);font-size:15px;margin-bottom:18px;}
+  form{display:flex;flex-direction:column;gap:12px;}
+  input[type=email]{width:100%;padding:15px 16px;font-size:16px;border:1.5px solid var(--line);
+    border-radius:10px;font-family:inherit;color:var(--navy);background:#fff;}
+  input[type=email]:focus{outline:none;border-color:var(--amber);}
+  button{width:100%;padding:18px;font-size:18px;font-weight:800;color:var(--navy);background:var(--amber);
+    border:none;border-radius:10px;cursor:pointer;font-family:inherit;letter-spacing:.01em;
+    transition:background .15s,transform .05s;}
+  button:hover{background:var(--amber-dk);}
+  button:active{transform:translateY(1px);}
+  .trust{text-align:center;color:var(--muted);font-size:14px;margin-top:14px;}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+  .inside{max-width:560px;margin:46px auto 0;}
+  .inside h3{text-align:center;font-size:24px;font-weight:800;margin-bottom:24px;}
+  .inside h3::after{content:"";display:block;width:54px;height:4px;border-radius:2px;
+    background:var(--amber);margin:12px auto 0;}
+  .item{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;}
+  .tick{flex:0 0 auto;width:28px;height:28px;border-radius:7px;background:var(--amber);
+    display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .tick svg{width:16px;height:16px;}
+  .item p{font-size:17px;color:var(--navy);}
+  .statline{max-width:560px;margin:36px auto 0;padding:22px 24px;border-left:6px solid var(--amber);
+    background:var(--white);border-radius:10px;color:var(--muted);font-size:16px;}
+  .statline b{color:var(--amber-dk);}
+  .foot{text-align:center;color:var(--muted);font-size:13px;margin-top:48px;}
+  .foot a{color:var(--navy);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+  <main class="wrap">
+
+    <div class="brandbar">
+      <!-- house mark -->
+      <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M62 250 L62 150 L34 150 L150 60 L266 150 L238 150 L238 250 Z"
+              stroke="#16324F" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+        <line x1="40" y1="270" x2="260" y2="270" stroke="#16324F" stroke-width="15" stroke-linecap="round"/>
+        <rect x="127" y="180" width="46" height="46" rx="4" fill="#E0922F"/>
+      </svg>
+      <span>BUILT BY SYSTEMS</span>
+    </div>
+
+    <p class="eyebrow">Free Download</p>
+    <h1>Your first year of homeownership, handled.</h1>
+    <div class="hr"></div>
+    <p class="sub">Get the free <b>First-Year Homeowner Maintenance Calendar</b> — every month's
+      must-do home tasks on one simple schedule. The stuff nobody hands you with the keys.</p>
+
+    <!-- Kit (ConvertKit) signup form -->
+    <div class="card">
+      <h2>Send me the free calendar</h2>
+      <p class="small">One email. The calendar lands in your inbox.</p>
+      <form action="https://app.convertkit.com/forms/9625420/subscriptions"
+            method="post" data-sv-form="9625420" data-uid="4bf6e0c51d"
+            data-format="inline" data-version="5">
+        <input type="email" name="email_address" placeholder="Your email address" required />
+        <button type="submit" data-element="submit">Send me the calendar &rarr;</button>
+      </form>
+      <p class="trust">Free. No spam. Unsubscribe anytime.</p>
+    </div>
+
+    <section class="inside">
+      <h3>What's inside</h3>
+      <div class="item"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4 10-10" stroke="#16324F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>A month-by-month maintenance schedule for your whole first year.</p></div>
+      <div class="item"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4 10-10" stroke="#16324F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>The week-one move-in must-dos — shut-off valves, detectors, breaker panel.</p></div>
+      <div class="item"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4 10-10" stroke="#16324F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Seasonal tasks that head off the expensive, out-of-nowhere repairs.</p></div>
+      <div class="item"><span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4 10-10" stroke="#16324F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>A clean, print-it-and-go format for your fridge or your phone.</p></div>
+    </section>
+
+    <p class="statline">The average homeowner spends <b>$8,808 a year</b> on their house — and more
+      than half still get blindsided by a repair they didn't see coming. A few small jobs each month
+      is what keeps the surprises (and the bills) small.</p>
+
+    <p class="foot">&copy; 2026 Built by Systems &middot; <a href="https://builtbysystems.online">builtbysystems.online</a></p>
+
+  </main>
+  <script async src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+</body>
+</html>
