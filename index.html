@@ -304,6 +304,30 @@
     text-align:center;color:#5A6B75;font-size:15px;margin:40px 0 0;
     font-family:"Inter",system-ui,sans-serif;
   }
+  /* free lead-magnet banner */
+  .homeline .hl-free{
+    margin:34px 0 0;background:#FFFFFF;border:1px solid #E2DED4;border-left:4px solid #E0922F;
+    border-radius:14px;padding:24px 26px;display:flex;align-items:center;justify-content:space-between;
+    gap:22px;flex-wrap:wrap;
+  }
+  .homeline .hl-free .ft{flex:1;min-width:260px;}
+  .homeline .hl-free .tag{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.12em;text-transform:uppercase;color:#C97A1C;
+  }
+  .homeline .hl-free h3{
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;color:#16324F;
+    font-size:20px;line-height:1.2;margin:6px 0 4px;letter-spacing:-.01em;
+  }
+  .homeline .hl-free p{color:#5A6B75;font-size:15px;margin:0;}
+  .homeline .hl-free a.fbtn{
+    flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
+    font-family:"Space Grotesk",system-ui,sans-serif;font-weight:600;font-size:15px;text-decoration:none;
+    background:#16324F;color:#fff;border:1px solid #16324F;border-radius:10px;padding:13px 22px;
+    transition:filter .15s ease,box-shadow .2s ease,transform .05s ease;
+  }
+  .homeline .hl-free a.fbtn:hover{filter:brightness(1.12);box-shadow:0 8px 20px rgba(22,50,79,.18);transform:translateY(-1px);}
+  @media (max-width:560px){ .homeline .hl-free a.fbtn{width:100%;justify-content:center;} }
   @media (min-width:981px){
     .homeline .hl-card.featured{transform:translateY(-12px);}
     .homeline .hl-card.featured:hover{transform:translateY(-16px);}
@@ -327,6 +351,7 @@
       <a class="brand" href="/">Built by <span>Systems</span></a>
       <nav>
         <a href="#home-tools">Home tools</a>
+        <a href="/free-calendar/">Free calendar</a>
       </nav>
     </div>
   </header>
@@ -386,6 +411,15 @@
         </div>
 
         <p class="hl-foot">Built to run offline. Your data stays yours.</p>
+
+        <div class="hl-free">
+          <div class="ft">
+            <span class="tag">Free download</span>
+            <h3>Not ready to buy? Start with the free calendar.</h3>
+            <p>Get the First-Year Homeowner Maintenance Calendar — every month's must-do tasks, straight to your inbox.</p>
+          </div>
+          <a class="fbtn" href="/free-calendar/">Get the free calendar →</a>
+        </div>
       </div>
     </section>
 

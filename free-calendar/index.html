@@ -45,6 +45,17 @@
   button:hover{background:var(--amber-dk);}
   button:active{transform:translateY(1px);}
   .trust{text-align:center;color:var(--muted);font-size:14px;margin-top:14px;}
+  /* Kit form (ck.5.js) structure — restyled to match this page */
+  .formkit-fields{display:flex;flex-direction:column;gap:12px;}
+  .formkit-field{display:flex;}
+  .formkit-input{width:100%;}
+  .formkit-submit{width:100%;}
+  .formkit-alert{list-style:none;margin:0;padding:0;}
+  .formkit-alert:empty{display:none;}
+  .formkit-alert-error:not(:empty){background:#FDE8E2;border:1px solid #F2643B;color:#C0492F;
+    border-radius:10px;padding:11px 13px;font-size:14px;text-align:center;margin-bottom:4px;}
+  .formkit-alert-success:not(:empty){background:#E7F2EC;border:1px solid #2F8F5B;color:#1f6e44;
+    border-radius:10px;padding:13px 15px;font-size:15px;text-align:center;}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
   .inside{max-width:560px;margin:46px auto 0;}
   .inside h3{text-align:center;font-size:24px;font-weight:800;margin-bottom:24px;}
@@ -86,11 +97,18 @@
     <div class="card">
       <h2>Send me the free calendar</h2>
       <p class="small">One email. The calendar lands in your inbox.</p>
-      <form action="https://app.convertkit.com/forms/9625420/subscriptions"
+      <form action="https://app.kit.com/forms/9625420/subscriptions"
+            class="seva-form formkit-form"
             method="post" data-sv-form="9625420" data-uid="4bf6e0c51d"
-            data-format="inline" data-version="5">
-        <input type="email" name="email_address" placeholder="Your email address" required />
-        <button type="submit" data-element="submit">Send me the calendar &rarr;</button>
+            data-format="inline" data-version="5"
+            data-options='{"settings":{"after_subscribe":{"action":"message","success_message":"Success! Check your email to confirm, and your calendar is on the way.","redirect_url":""},"recaptcha":{"enabled":false}}}'>
+        <ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>
+        <div data-element="fields" data-stacked="true" class="seva-fields formkit-fields">
+          <div class="formkit-field">
+            <input class="formkit-input" type="email" name="email_address" aria-label="Your email address" placeholder="Your email address" required />
+          </div>
+          <button data-element="submit" class="formkit-submit" type="submit">Send me the calendar &rarr;</button>
+        </div>
       </form>
       <p class="trust">Free. No spam. Unsubscribe anytime.</p>
     </div>
