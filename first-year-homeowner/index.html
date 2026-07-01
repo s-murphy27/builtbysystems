@@ -42,6 +42,10 @@
 
   nav.site{position:sticky;top:0;z-index:30;background:rgba(248,246,241,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);}
   nav.site .row{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
+  nav.site .navr{display:flex;align-items:center;gap:20px;}
+  nav.site .navlink{font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);text-decoration:none;}
+  nav.site .navlink:hover{color:var(--ink);}
+  @media(max-width:560px){ nav.site .navr{gap:12px;} }
   .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:17px;}
   .logo .mk{width:30px;height:30px;border:2px solid var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;}
   nav .btn{padding:10px 18px;font-size:15px;}
@@ -142,7 +146,10 @@
 <nav class="site">
   <div class="row">
     <a class="logo" href="https://builtbysystems.online"><span class="mk">FY</span> Built by Systems</a>
-    <a class="btn" href="https://stan.store/BuiltBySystems/p/the-firstyear-homeowner-kit" target="_blank" rel="noopener">Get the Kit <span class="price">$19</span></a>
+    <div class="navr">
+      <a class="navlink" href="/blog/">Blog</a>
+      <a class="btn" href="https://stan.store/BuiltBySystems/p/the-firstyear-homeowner-kit" target="_blank" rel="noopener">Get the Kit <span class="price">$19</span></a>
+    </div>
   </div>
 </nav>
 
