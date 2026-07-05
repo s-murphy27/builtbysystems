@@ -358,11 +358,73 @@
   <header>
     <div class="wrap bar">
       <a class="brand" href="/">Built by <span>Systems</span></a>
-      <nav>
+      <!-- NAV START -->
+      <style>
+        /* mobile nav — hamburger toggle (small screens only; desktop nav is untouched) */
+        .nav-toggle{
+          display:none;               /* hidden on desktop */
+          font-family:var(--mono);
+          font-size:22px;
+          line-height:1;
+          color:var(--ink);
+          background:none;
+          border:none;
+          cursor:pointer;
+          padding:6px;
+          margin:0;
+        }
+        .nav-toggle:hover{color:var(--accent);}
+        @media (max-width:760px){
+          header{position:relative;}
+          .nav-toggle{display:inline-flex;align-items:center;justify-content:center;}
+          /* links become a cream dropdown panel below the bar */
+          nav{
+            display:none;
+            position:absolute;
+            top:100%;
+            left:0;
+            right:0;
+            flex-direction:column;
+            background:var(--paper);
+            border-bottom:1px solid var(--hair);
+            box-shadow:0 12px 24px rgba(30,33,28,.08);
+            z-index:40;
+          }
+          nav.open{display:flex;}
+          nav a{
+            margin:0;
+            display:block;
+            padding:16px 28px;
+            border-top:1px solid var(--hair);
+          }
+        }
+      </style>
+      <nav id="primary-nav" aria-label="Primary">
         <a href="#home-tools">Home tools</a>
         <a href="/free-calendar/">Free calendar</a>
         <a href="/blog/">Blog</a>
       </nav>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-controls="primary-nav" aria-expanded="false">☰</button>
+      <script>
+        (function(){
+          var btn = document.querySelector('.nav-toggle');
+          var nav = document.getElementById('primary-nav');
+          if(!btn || !nav) return;
+          function setOpen(open){
+            nav.classList.toggle('open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            btn.textContent = open ? '✕' : '☰'; /* ✕ / ☰ */
+          }
+          btn.addEventListener('click', function(){
+            setOpen(!nav.classList.contains('open'));
+          });
+          /* tapping a link closes the menu */
+          nav.addEventListener('click', function(e){
+            if(e.target.tagName === 'A') setOpen(false);
+          });
+        })();
+      </script>
+      <!-- NAV END -->
     </div>
   </header>
 
