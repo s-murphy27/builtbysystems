@@ -347,6 +347,10 @@
   }
   @media (max-width:560px){
     .homeline .hl-grid{grid-template-columns:1fr;}
+    /* let the free-calendar banner text column shrink below 260px so the
+       page fits narrow phones (~320px and down) without sideways scroll */
+    .homeline .hl-free{padding:22px;}
+    .homeline .hl-free .ft{min-width:0;flex-basis:100%;}
   }
   @media (prefers-reduced-motion:reduce){
     .homeline .hl-card,.homeline .hl-card.featured{transition:none;}
