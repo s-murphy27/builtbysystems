@@ -70,7 +70,7 @@ function DashboardPage() {
       <div className="mx-auto mt-12 max-w-4xl px-4 pb-20">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div className="feature-card cursor-pointer"><div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-squad-teal/20 to-squad-blue/20 text-2xl shadow-sm">📋</div><h3 className="mb-2 text-lg font-bold text-gray-800">My Tasks</h3><p className="text-sm text-gray-500">View your monthly maintenance checklist</p></div>
-          <div className="feature-card cursor-pointer"><div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-squad-orange/20 to-squad-yellow/20 text-2xl shadow-sm">🏠</div><h3 className="mb-2 text-lg font-bold text-gray-800">My Home</h3><p className="text-sm text-gray-500">Set up your home details and preferences</p></div>
+          <a href="/setup" className="feature-card cursor-pointer block"><div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-squad-orange/20 to-squad-yellow/20 text-2xl shadow-sm">🏠</div><h3 className="mb-2 text-lg font-bold text-gray-800">My Home</h3><p className="text-sm text-gray-500">Set up your home details and preferences</p></a>
           <div className="feature-card cursor-pointer"><div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-squad-purple/20 to-squad-coral/20 text-2xl shadow-sm">🏆</div><h3 className="mb-2 text-lg font-bold text-gray-800">Achievements</h3><p className="text-sm text-gray-500">Track your badges and rewards</p></div>
         </div>
       </div>
