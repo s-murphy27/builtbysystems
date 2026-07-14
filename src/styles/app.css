@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+/* ─── HomeSquad Custom Theme ─── */
+@theme {
+  --color-squad-orange: #f97316;
+  --color-squad-orange-dark: #ea580c;
+  --color-squad-orange-light: #fed7aa;
+  --color-squad-teal: #0d9488;
+  --color-squad-teal-dark: #0f766e;
+  --color-squad-teal-light: #99f6e4;
+  --color-squad-yellow: #facc15;
+  --color-squad-yellow-dark: #eab308;
+  --color-squad-yellow-light: #fef08a;
+  --color-squad-green: #22c55e;
+  --color-squad-cream: #fef7ee;
+  --color-squad-warm: #fff7ed;
+  --color-squad-coral: #fb7185;
+  --color-squad-purple: #a855f7;
+  --color-squad-blue: #3b82f6;
+  --font-family-display: "Fredoka", "Nunito", system-ui, sans-serif;
+  --font-family-body: "Nunito", system-ui, sans-serif;
+}
+
+@layer base {
+  html,
+  body {
+    @apply bg-squad-cream text-gray-800 antialiased;
+    font-family: var(--font-family-body);
+  }
+}
+
+/* ─── Animations ─── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.6); }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up-delay-1 {
+  animation: fadeInUp 0.6s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-2 {
+  animation: fadeInUp 0.6s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-3 {
+  animation: fadeInUp 0.6s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-4 {
+  animation: fadeInUp 0.6s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out forwards;
+}
+
+/* ─── Gradient text ─── */
+.gradient-text {
+  @apply bg-gradient-to-r from-squad-orange via-squad-teal to-squad-purple bg-clip-text text-transparent;
+}
+
+/* ─── Card hover effects ─── */
+.feature-card {
+  @apply relative overflow-hidden rounded-2xl border-2 border-transparent bg-white p-6 shadow-lg transition-all duration-300;
+}
+
+.feature-card:hover {
+  @apply -translate-y-1 shadow-xl;
+  border-image: linear-gradient(135deg, #f97316, #0d9488, #a855f7) 1;
+}
+
+/* ─── Button styles ─── */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-squad-orange to-squad-orange-dark px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:from-squad-orange-dark hover:to-squad-orange hover:shadow-xl active:scale-95;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-squad-teal bg-white px-6 py-3 font-semibold text-squad-teal transition-all duration-200 hover:bg-squad-teal-light/30 active:scale-95;
+}
+
+/* ─── Input styles ─── */
+.input-primary {
+  @apply w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 transition-all duration-200 focus:border-squad-orange focus:outline-none focus:ring-4 focus:ring-squad-orange/20;
+}

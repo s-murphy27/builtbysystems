@@ -1,2 +1,6 @@
-# Paid deliverables — never commit or deploy to Cloudflare
-/_deliverables/
+node_modules/
+dist/
+.run/
+.env
+*.log
+.DS_Store
